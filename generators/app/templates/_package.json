@@ -1,0 +1,14 @@
+{
+  "name": "<%= props.name %>",
+  "version": "0.0.1",
+  "description": "",
+  "license": "",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

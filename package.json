@@ -1,0 +1,36 @@
+{
+  "name": "wip",
+  "version": "0.0.0",
+  "description": "???",
+  "license": "???",
+  "main": "generators/app/index.js",
+  "repository": "pauldijou/wip",
+  "author": {
+    "name": "Paul Dijou",
+    "email": "paul.dijou@gmail.com",
+    "url": "https://github.com/pauldijou"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "generators"
+  ],
+  "keywords": [
+    "yeoman-generator",
+    "kickoff",
+    "liftoff",
+    "takeoff",
+    "ignition",
+    "moon"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^0.20.0",
+    "chalk": "^1.0.0",
+    "yosay": "^1.0.2",
+    "lodash": "^3.8.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
