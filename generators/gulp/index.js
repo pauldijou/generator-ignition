@@ -28,6 +28,7 @@ module.exports = Base.extend({
     npmDev.push("gulp-plumber");
     npmDev.push("gulp-rimraf");
 
+    this.structure.add(this, 'gulpfile.js');
     this.structure.gulp.utils.add(this, '$.js');
     this.structure.gulp.utils.add(this, 'onError.js');
     this.structure.gulp.utils.add(this, 'utils.js');

@@ -2,11 +2,6 @@ var gulp    = require('gulp');
 var karma   = require('karma').server;
 var $       = require('./utils/$');
 
-gulp.task('unit:clean', function () {
-  return gulp.src($.paths.test.unit.build, {read: false})
-    .pipe($.rimraf());
-});
-
 var compileCoffee = $.lazypipe()
   .pipe($.plumber, {errorHandler: $.on.error})
   .pipe($.coffee, {bare: true})

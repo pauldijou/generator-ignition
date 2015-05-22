@@ -7,8 +7,12 @@ gulp.task('html:watch', function () {
   });
 });
 
-gulp.task('styles:watch', $.config.styles.map(function (s) { return s + ':watch'; }));
+<% if (with.style && !with.css) { %>
+gulp.task('styles:watch', ['<%= props.style %>:watch'] }));
 
-gulp.task('scripts:watch', $.config.scripts.map(function (s) { return s + ':watch'; }));
+<% } %>
+<% if (with.script && !with.javascript) { %>
+gulp.task('scripts:watch', ['<%= props.script %>:watch'] }));
 
+<% } %>
 gulp.task('watch', ['sprites', 'styles:watch', 'scripts:watch', 'html:watch']);

@@ -14,7 +14,7 @@ var compile = $.lazypipe()
     return $.if($.config.live, $.reloadStream())
   });
 
-gulp.task('typescript', ['scripts:clean'], function () {
+gulp.task('typescript', ['clean:scripts'], function () {
   return gulp.src($.paths.typescript.all).pipe(compile());
 });
 

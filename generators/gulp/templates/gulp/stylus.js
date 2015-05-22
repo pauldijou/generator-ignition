@@ -9,7 +9,7 @@ var config = {
   }
 };
 
-gulp.task('stylus', ['styles:clean'], function () {
+gulp.task('stylus', ['clean:styles'], function () {
   return gulp.src($.paths.stylus.main)
     .pipe($.plumber({errorHandler: $.on.error}))
     .pipe($.stylus(config))

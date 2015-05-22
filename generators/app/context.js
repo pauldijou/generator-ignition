@@ -5,6 +5,7 @@ function Context(opts) {
   this.options = opts.options;
   this.props = opts.props || {};
   this.versions = opts.versions || [];
+  this.with = {};
 
   this.bower = [];
   this.npm = [];

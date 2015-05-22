@@ -5,16 +5,16 @@ var compile = $.lazypipe()
   .pipe($.plumber, {errorHandler: $.on.error})
   .pipe($.sourcemaps.init)
   .pipe($.coffee, {bare: true})
-  //@ifdef angularjs
+  <% if (with.angular || with.angular2) { %>
   .pipe($.ngAnnotate)
-  //@endif
+  <% } %>
   .pipe($.sourcemaps.write)
   .pipe(gulp.dest, $.paths.scripts.dest)
   .pipe(function () {
     return $.if($.config.live, $.reloadStream())
   });
 
-gulp.task('coffee', ['scripts:clean'], function () {
+gulp.task('coffee', ['clean:scripts'], function () {
   return gulp.src($.paths.coffee.all).pipe(compile());
 });
 

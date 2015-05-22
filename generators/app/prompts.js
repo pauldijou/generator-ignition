@@ -29,7 +29,7 @@ module.exports = function (generator) {
     type: 'list',
     name: 'style',
     message: 'Do you want to use a CSS preprocessor?',
-    default: 'scss',
+    default: 'sass',
     store: true,
     choices: [
       {name: 'SCSS / SASS', value: 'sass'},
@@ -67,13 +67,13 @@ module.exports = function (generator) {
     message: 'Do you need some extra goodies?',
     store: true,
     choices: [
-      {name: 'Autoprefixer', value: 'autoprefixer'},
-      {name: 'Sourcemaps', value: 'sourcemaps'},
-      {nname: 'Server', value: 'server'}
+      {name: ' Autoprefixer', value: 'autoprefixer'},
+      {name: ' Sourcemaps', value: 'sourcemaps'},
+      {name: ' Server', value: 'server'}
     ],
     when: hasBuild
   }, {
-    type: 'confirm',
+    type: 'list',
     name: 'test',
     message: 'Do you want to run some tests? If so, please pick a test runner',
     default: 'karma',

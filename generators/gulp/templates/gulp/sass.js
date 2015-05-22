@@ -12,7 +12,7 @@ var config = {
   ]
 };
 
-gulp.task('sass', ['styles:clean'], function () {
+gulp.task('sass', ['clean:styles'], function () {
   return gulp.src($.paths.sass.main)
     .pipe($.plumber({errorHandler: $.on.error}))
     .pipe($.rubySass(config))

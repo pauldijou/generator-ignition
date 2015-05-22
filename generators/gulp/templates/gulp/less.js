@@ -8,7 +8,7 @@ var config = {
   ]
 };
 
-gulp.task('less', ['styles:clean'], function () {
+gulp.task('less', ['clean:styles'], function () {
   return gulp.src($.paths.less.main)
     .pipe($.plumber({errorHandler: $.on.error}))
     .pipe($.sourcemaps.init())

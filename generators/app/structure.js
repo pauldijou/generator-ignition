@@ -53,6 +53,21 @@ Folder.prototype.forEachFile = function (cb) {
   this.getFiles().forEach(cb);
 };
 
+Folder.prototype.rename = function (newName) {
+  var parent = this.getParent();
+  if (!parent) {
+    throw new Error('You cannot rename the root folder.');
+  } else if (newName === this.getName()) {
+    throw new Error('Please, pick a different name than the actual one.');
+  } else if (parent[newName]) {
+    throw new Error('A folder with this name alreay exist.');
+  } else {
+    delete parent[this.getName()]
+    this.__private.name = newName;
+    parent[newName] = this;
+  }
+};
+
 Folder.prototype.toString = function (prefixFolder, prefixContent) {
   var foldersSeparator = this.isRoot() ? '\n │\n' : '\n';
 

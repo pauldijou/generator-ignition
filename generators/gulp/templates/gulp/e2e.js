@@ -1,11 +1,6 @@
 var gulp    = require('gulp');
 var $       = require('./utils/$');
 
-gulp.task('e2e:clean', function () {
-  return gulp.src($.paths.test.e2e.build, {read: false})
-    .pipe($.rimraf());
-});
-
 var protractor = $.lazypipe()
   .pipe($.protractor.protractor, {
     configFile: './test/protractor.config.js'

@@ -2,7 +2,6 @@
 var chalk = require('chalk');
 var yosay = require('yosay');
 var versions = require('./versions');
-var modules = require('./modules');
 var Context = require('./context');
 var Base = require('./base');
 var structure = require('./structure');
@@ -44,7 +43,7 @@ module.exports = Base.extend({
 
       this.props.buildOthers.forEach(function (o) {
         this.props[o] = true;
-      });
+      }.bind(this));
 
       this.delimiter();
 
@@ -53,7 +52,7 @@ module.exports = Base.extend({
   },
 
   configuring: function () {
-    var props = this.pros;
+    var props = this.props;
     var npm = [];
     var npmDev = [];
     var bower = [];
@@ -62,14 +61,17 @@ module.exports = Base.extend({
     this.structure.add(this, '_package.json', 'package.json');
 
     if (props.style) {
+      this.context.with.style = true;
       this.structure.addFolder('styles');
     }
 
     if (props.script) {
+      this.context.with.script = true;
       this.structure.addFolder('scripts');
     }
 
     if (props.test) {
+      this.context.with.test = true;
       this.structure.addFolder('test');
       this.structure.test.addFolder('unit');
       this.structure.test.addFolder('e2e');
@@ -77,16 +79,20 @@ module.exports = Base.extend({
 
     switch (props.style) {
       case 'sass':
-        this.structure.style.add(this, 'app.scss');
+        this.context.with.sass = true;
+        this.structure.styles.add(this, 'app.scss');
         break;
       case 'less':
-        this.structure.style.add(this, 'app.less');
+        this.context.with.less = true;
+        this.structure.styles.add(this, 'app.less');
         break;
       case 'stylus':
-        this.structure.style.add(this, 'app.styl');
+        this.context.with.stylus = true;
+        this.structure.styles.add(this, 'app.styl');
         break;
       case 'css':
-        this.structure.style.add(this, 'app.css');
+        this.context.with.css = true;
+        this.structure.styles.add(this, 'app.css');
         break;
     }
 
@@ -108,13 +114,11 @@ module.exports = Base.extend({
   },
 
   composition: function () {
-    if (this.props.buildTool === 'gulp') {
-      this._composeWith('gulp');
-    }
-
-    if (this.props.javaScriptFramework === 'angular2') {
-      this._composeWith('angular2');
-    }
+    this.getGenerators().forEach(function (gen) {
+      if (this.context.with[gen]) {
+        this._composeWith(gen);
+      }
+    }.bind(this))
 
     this.log('Thanks for all your answers! Time for me to work now.');
   },
@@ -129,9 +133,6 @@ module.exports = Base.extend({
 
   writing: function () {
     this.structure.forEachFile(function (file) {
-      this.log(this._getTemplateOf(file));
-      this.log(this._getDestinationOf(file));
-      this.log(' ');
       this.template(
         this._getTemplateOf(file),
         this._getDestinationOf(file),
@@ -173,7 +174,7 @@ module.exports = Base.extend({
   _displayMessages: function (property, title, color) {
     if (this.context[property].length > 0) {
       this.log('--------------------------------------------------------------------');
-      this.log('- ' + chalk[color].bold(title);
+      this.log('- ' + chalk[color].bold(title));
       this.log('------------------');
       this.log('');
 

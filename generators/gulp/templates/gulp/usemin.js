@@ -7,7 +7,7 @@ function requireCompression(file) {
   return requireCompressionRegex.test(file.path);
 }
 
-gulp.task('usemin', ['deploy:clean', 'build'], function () {
+gulp.task('usemin', ['clean:deploy', 'build'], function () {
   return gulp.src(['./index.html', $.paths.templates.all], {base: '.'})
     .pipe($.usemin({
       html: [$.minifyHtml({empty: true})],

@@ -2,8 +2,28 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
 
 module.exports = yeoman.generators.Base.extend({
+  verbose: function (msg) {
+    if (this.context && this.context.options.verbose) {
+      this.log(msg);
+    }
+  },
+
+  debug: function (msg) {
+    if (this.context && this.context.options.debug) {
+      this.log(msg);
+    }
+  },
+
+  getGenerators: function (opts) {
+    return fs.readdirSync(path.join(__dirname, '..')).filter(function (f) {
+      return f !== 'app';
+    });
+  },
+
   delimiter: function () {
     this.log('');
     this.log('-----------------------------------');
@@ -33,7 +53,7 @@ module.exports = yeoman.generators.Base.extend({
         return result;
       }
     }
-  }
+  },
 
   msg: {
     raw: function (title, msg, color) {
