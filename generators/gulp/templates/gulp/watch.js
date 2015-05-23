@@ -7,11 +7,11 @@ gulp.task('html:watch', function () {
   });
 });
 
-<% if (with.style && !with.css) { %>
+<% if (has.style && !has.css) { %>
 gulp.task('styles:watch', ['<%= props.style %>:watch'] }));
 
 <% } %>
-<% if (with.script && !with.javascript) { %>
+<% if (has.script && !has.javascript) { %>
 gulp.task('scripts:watch', ['<%= props.script %>:watch'] }));
 
 <% } %>

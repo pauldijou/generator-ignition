@@ -62,48 +62,56 @@ Folder.prototype.rename = function (newName) {
   } else if (parent[newName]) {
     throw new Error('A folder with this name alreay exist.');
   } else {
-    delete parent[this.getName()]
+    // delete parent[this.getName()]
     this.__private.name = newName;
-    parent[newName] = this;
+    // parent[newName] = this;
   }
 };
 
-Folder.prototype.toString = function (prefixFolder, prefixContent) {
-  var foldersSeparator = this.isRoot() ? '\n │\n' : '\n';
+Folder.prototype.toString = function () {
+  return this.getName();
+};
 
+Folder.prototype.toTuples = function (onlyFolders, prefixFolder, prefixContent) {
   prefixFolder = prefixFolder ? prefixFolder + '── ' : ' ';
   prefixContent = prefixContent ? prefixContent + '   ' : ' ';
 
+  var result = [{object: this, string: prefixFolder + this.getName()}];
+
   var folders = this.getFolders();
-  var hasFolders = folders.length > 0;
   var lastFolder = folders.length - 1;
 
   var files = this.getFiles();
-  var hasFiles = files.length > 0;
   var lastFile = files.length - 1;
+  var hasFiles = !onlyFolders && files.length > 0;
 
-  folders = folders.map(function (folder, index) {
+  folders.forEach(function (folder, index) {
     if (hasFiles || index !== lastFolder) {
-      return folder.toString(prefixContent + '├', prefixContent + '│');
+      result = result.concat(folder.toTuples(onlyFolders, prefixContent + '├', prefixContent + '│'));
     } else {
-      return folder.toString(prefixContent + '└', prefixContent + ' ');
+      result = result.concat(folder.toTuples(onlyFolders, prefixContent + '└', prefixContent + ' '));
     }
-  }).join(foldersSeparator);
 
-  files = files.map(function (file, index) {
-    if (index === lastFile) {
-      return prefixContent + '└── ' + file.toString();
-    } else {
-      return prefixContent + '├── ' + file.toString();
+    if (this.isRoot() && !onlyFolders) {
+      result.push({string: ' │'});
     }
-  }).join('\n');
+  }.bind(this));
 
-  return prefixFolder
-    + this.getName()
-    + (hasFolders ? '\n' : '')
-    + folders
-    + (hasFiles ? foldersSeparator : '')
-    + files;
+  if (!onlyFolders) {
+    files.forEach(function (file, index) {
+      if (index === lastFile) {
+        result.push({object: file, string: prefixContent + '└── ' + file.toString()});
+      } else {
+        result.push({object: file, string: prefixContent + '├── ' + file.toString()});
+      }
+    }.bind(this));
+  }
+
+  return result;
+};
+
+Folder.prototype.toTree = function () {
+  return this.toTuples().map(function (t) { return t.string; }).join('\n');
 };
 
 

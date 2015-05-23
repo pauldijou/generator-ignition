@@ -5,7 +5,7 @@ var utils       = require('./utils');
 // Expose all Gulp plugins found
 module.exports = plugins;
 
-<% if (modules.server) { %>
+<% if (has.server) { %>
 // Expose some functions to manage live reloading
 var browserSync = require('browser-sync');
 
@@ -19,7 +19,7 @@ module.exports.reloadStream = function () {
 // Expose some other modules (local or not)
 module.exports.through2   = require('through2');
 module.exports.lazypipe   = require('lazypipe');
-<% if (modules.browserify) { %>
+<% if (has.browserify) { %>
 module.exports.browserify = require('browserify');
 module.exports.watchify   = require('watchify');
 <% } %>

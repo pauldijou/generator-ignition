@@ -5,7 +5,7 @@ var compile = $.lazypipe()
   .pipe($.plumber, {errorHandler: $.on.error})
   .pipe($.sourcemaps.init)
   .pipe($.coffee, {bare: true})
-  <% if (with.angular || with.angular2) { %>
+  <% if (has.angular || has.angular2) { %>
   .pipe($.ngAnnotate)
   <% } %>
   .pipe($.sourcemaps.write)

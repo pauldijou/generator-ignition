@@ -14,7 +14,7 @@ module.exports = yeoman.generators.Base.extend({
 
   debug: function (msg) {
     if (this.context && this.context.options.debug) {
-      this.log(msg);
+      this.log('[' + chalk.magenta.bold('DEBUG') + '] ' + msg);
     }
   },
 

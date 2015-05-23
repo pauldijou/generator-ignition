@@ -10,6 +10,13 @@ var versions = require('./versions');
 module.exports = Base.extend({
   initializing: {
     options: function () {
+      // console.log(this.engine);
+      // this.remote('pauldijou', 'gulp-kickoff', function (error, remote) {
+      //   console.log(remote.engine);
+      //   console.log(remote);
+      //   remote.template('package.json', './package.json');
+      // });
+      console.log(__dirname);
       this.option('debug');
       this.option('verbose');
     },
@@ -40,13 +47,7 @@ module.exports = Base.extend({
 
     this.prompt(prompts, function (props) {
       this.props = props;
-
-      this.props.buildOthers.forEach(function (o) {
-        this.props[o] = true;
-      }.bind(this));
-
       this.delimiter();
-
       done();
     }.bind(this));
   },
@@ -60,18 +61,30 @@ module.exports = Base.extend({
     this.structure.add(this, 'gitignore', '.gitignore');
     this.structure.add(this, '_package.json', 'package.json');
 
+    if (props.build) {
+      this.context.has.build = true;
+      this.context.has[props.build] = true;
+      this.structure.addFolder('build');
+    }
+
     if (props.style) {
-      this.context.with.style = true;
+      this.context.has.style = true;
+      this.context.has[props.style] = true;
       this.structure.addFolder('styles');
     }
 
     if (props.script) {
-      this.context.with.script = true;
+      this.context.has.script = true;
+      this.context.has[props.script] = true;
       this.structure.addFolder('scripts');
     }
 
+    props.buildOthers.forEach(function (o) {
+      this.context.has[o] = true;
+    }.bind(this));
+
     if (props.test) {
-      this.context.with.test = true;
+      this.context.has.test = true;
       this.structure.addFolder('test');
       this.structure.test.addFolder('unit');
       this.structure.test.addFolder('e2e');
@@ -79,19 +92,15 @@ module.exports = Base.extend({
 
     switch (props.style) {
       case 'sass':
-        this.context.with.sass = true;
         this.structure.styles.add(this, 'app.scss');
         break;
       case 'less':
-        this.context.with.less = true;
         this.structure.styles.add(this, 'app.less');
         break;
       case 'stylus':
-        this.context.with.stylus = true;
         this.structure.styles.add(this, 'app.styl');
         break;
       case 'css':
-        this.context.with.css = true;
         this.structure.styles.add(this, 'app.css');
         break;
     }
@@ -108,19 +117,71 @@ module.exports = Base.extend({
   _composeWith: function (name) {
     this.log('Beginning the setup of ' + chalk.red(name) + '...');
     this.composeWith('kickoff:' + name, { options: { context: this.context } });
-    this.log('');
     this.log('Setup done.');
     this.delimiter();
   },
 
   composition: function () {
     this.getGenerators().forEach(function (gen) {
-      if (this.context.with[gen]) {
+      if (this.context.has[gen]) {
         this._composeWith(gen);
       }
     }.bind(this))
+  },
 
-    this.log('Thanks for all your answers! Time for me to work now.');
+  organization: function () {
+    var self = this;
+    var done = this.async();
+    this.log('Here is the structure of the application I\'m about to create for you:');
+    this.log('');
+    this.log(this.structure.toTree());
+    this.log('');
+    this.log('');
+
+    this.prompt([{
+      name: 'renaming',
+      type: 'list',
+      message: 'Are you okay with it or do you want to rename some folders?',
+      default: true,
+      choices: [
+        {name: 'LGTM (Looks good to me)', value: false},
+        {name: 'Not okay', value: true}
+      ]
+    }], function (props) {
+      if (props.renaming) {
+        renameFolder();
+      } else {
+        done();
+      }
+    }.bind(this));
+
+    function renameFolder() {
+      self.prompt([{
+        name: 'folder',
+        type: 'list',
+        message: 'Please, pick a folder to rename',
+        choices: self.structure.toTuples(true).map(function (t) {
+          return {name: t.string, value: t.object};
+        }).concat([
+          {name: ' ', value: false},
+          {name: 'I\'m done renaming.', value: false}
+        ])
+      }, {
+        name: 'folderName',
+        type: 'input',
+        message: 'Enter the new name',
+        when: function (answers) {
+          return !!answers.folder;
+        }
+      }], function (props) {
+        if (props.folder) {
+          props.folder.rename(props.folderName);
+          renameFolder();
+        } else {
+          done();
+        }
+      });
+    }
   },
 
   _getTemplateOf: function (file) {
@@ -128,16 +189,19 @@ module.exports = Base.extend({
   },
 
   _getDestinationOf: function (file) {
-    return this.destinationPath(this.engine(file.getDestinationPath(), this.context));
+    // return this.destinationPath(this.engine(file.getDestinationPath(), this.context));
+    return this.destinationPath(file.getDestinationPath());
   },
 
   writing: function () {
+    this.delimiter();
+    this.log('Thanks for all your answers! Time for me to work now.');
+
     this.structure.forEachFile(function (file) {
-      this.template(
-        this._getTemplateOf(file),
-        this._getDestinationOf(file),
-        this.context
-      )
+      var from = this._getTemplateOf(file);
+      var to = this._getDestinationOf(file);
+      this.debug('Templating from ' + from + ' to ' + to);
+      this.template(from, to, this.context)
     }.bind(this));
   },
 
@@ -151,7 +215,7 @@ module.exports = Base.extend({
 
   install: {
     dependencies: function () {
-      var dependencies = this._appendVersion(this._getDependencies())
+      var dependencies = this._appendVersion(this.context.npm)
 
       if (dependencies.length > 0) {
         // this.npmInstall(dependencies, { 'save': true })
@@ -159,15 +223,11 @@ module.exports = Base.extend({
     },
 
     devDependencies: function () {
-      var devDependencies = this._appendVersion(this._getDevDependencies())
+      var devDependencies = this._appendVersion(this.context.npmDev)
 
       if (devDependencies.length > 0) {
         // this.npmInstall(devDependencies, { 'saveDev': true })
       }
-    },
-
-    all: function () {
-      // this.installDependencies();
     }
   },
 

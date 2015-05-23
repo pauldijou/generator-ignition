@@ -1,9 +1,9 @@
 var gulp   = require('gulp');
 var $      = require('./utils/$');
 
-<% if (props.style === 'sass') { %>
-gulp.task('styles:build', ['sass']);
-<% } else if (props.style ===)
+<% if (has.style && !has.css) { %>
+gulp.task('styles:build', ['<%= props.style %>']);
+<% } %>
 
 gulp.task('scripts:build', $.config.scripts);
 

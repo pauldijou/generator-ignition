@@ -36,7 +36,7 @@ module.exports = function (generator) {
       {name: 'LESS', value: 'less'},
       {name: 'Stylus', value: 'stylus'},
       {name: 'Nope, I\'m good, I will just write pure CSS', value: 'css'},
-      {name: 'Nothing at all, no style needed', value: false}
+      {name: 'Nothing at all, no CSS needed', value: false}
     ],
     when: hasBuild
   }, {
@@ -55,11 +55,29 @@ module.exports = function (generator) {
     ],
     when: hasBuild
   }, {
-    type: 'confirm',
-    name: 'browserify',
-    message: 'What about using Browserify to package your code?',
-    default: false,
+    type: 'list',
+    name: 'loader',
+    message: 'Do you need to use a module loader?',
+    default: 'browserify',
     store: true,
+    choices: [
+      {name: 'Browserify', value: 'browserify'},
+      {name: 'SystemJS', value: 'systemjs'},
+      {name: 'Nope', value: false}
+    ],
+    when: hasBuild
+  }, {
+    type: 'list',
+    name: 'packageManager',
+    message: 'Which one is your favorite package manager?',
+    default: 'npm',
+    store: true,
+    choices: [
+      {name: 'NPM', value: 'npm'},
+      {name: 'Bower', value: 'bower'},
+      {name: 'jspm', value: 'jspm'},
+      {name: 'None', value: false}
+    ],
     when: hasBuild
   }, {
     type: 'checkbox',
@@ -85,7 +103,7 @@ module.exports = function (generator) {
   }, {
     type: 'checkbox',
     name: 'karmaLaunchers',
-    message: 'Which Karma launchers do you want to install?',
+    message: 'Which Karma launcher(s) do you want to install?',
     default: 'chrome',
     store: true,
     choices: [
@@ -98,12 +116,14 @@ module.exports = function (generator) {
     validate: function (answer) {
       if (answer.length === 0) {
         return 'You need to pick at least one launcher'
+      } else {
+        return true;
       }
     }
   }, {
     type: 'checkbox',
     name: 'karmaReporters',
-    message: 'Which Karma reporters do you want to use?',
+    message: 'Which Karma reporter(s) do you want to use?',
     default: 'nested',
     store: true,
     choices: [
@@ -114,7 +134,9 @@ module.exports = function (generator) {
     when: is('test', 'karma'),
     validate: function (answer) {
       if (answer.length === 0) {
-        return 'You to pick at least one reporter'
+        return 'You need to pick at least one reporter'
+      } else {
+        return true;
       }
     }
   }];
