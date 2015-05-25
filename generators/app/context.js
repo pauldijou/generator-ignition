@@ -3,6 +3,7 @@ var _ = require('lodash');
 function Context(opts) {
   this.structure = opts.structure;
   this.options = opts.options;
+
   this.props = opts.props || {};
   this.versions = opts.versions || [];
   this.has = {};
@@ -17,32 +18,20 @@ function Context(opts) {
   this.success = [];
 }
 
-Context.prototype.addProps = function (props) {
-  _.merge(this.props, props || {});
+Context.prototype.merge = function (name, obj) {
+  _.merge(this[name], obj || {});
 }
 
-Context.prototype.addVersions = function (versions) {
-  _.merge(this.versions, versions || {});
-}
-
-Context.prototype.addBowerDependencies = function (dependencies) {
-  this.bower = _.uniq(this.bower.concat(dependencies || []));
-}
-
-Context.prototype.addNpmDependencies = function (dependencies) {
-  this.npm = _.uniq(this.npm.concat(dependencies || []));
-}
-
-Context.prototype.addNpmDevDependencies = function (dependencies) {
-  this.npmDev = _.uniq(this.npmDev.concat(dependencies || []));
+Context.prototype.concatUniq = function (name, dependencies) {
+  this[name] = _.uniq(this[name].concat(dependencies || []));
 }
 
 Context.prototype.addGeneratorContext = function (context) {
-  this.addProps(context.props);
-  this.addVersions(context.versions);
-  this.addBowerDependencies(context.bower);
-  this.addNpmDependencies(context.npm);
-  this.addNpmDevDependencies(context.npmDev);
+  this.merge('props', context.props);
+  this.merge('versions', context.versions);
+  this.concatUniq('npm', context.npm);
+  this.concatUniq('npmDev', context.npmDev);
+  this.concatUniq('bower', context.bower);
 }
 
 Context.prototype.info = function (msg) { this.info.push(msg); }

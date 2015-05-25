@@ -4,8 +4,11 @@ var chalk = require('chalk');
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
+var ejs = require('ejs');
 
 module.exports = yeoman.generators.Base.extend({
+  render: ejs.render,
+
   verbose: function (msg) {
     if (this.context && this.context.options.verbose) {
       this.log(msg);
@@ -20,7 +23,7 @@ module.exports = yeoman.generators.Base.extend({
 
   getGenerators: function (opts) {
     return fs.readdirSync(path.join(__dirname, '..')).filter(function (f) {
-      return f !== 'app';
+      return f !== 'app' && f !== 'faq' && f !== 'help' && f !== 'sub';
     });
   },
 

@@ -1,0 +1,18 @@
+gulp.task('<%= name %>', ['clean:styles'], function () {
+  return gulp.src($.paths.styles.srcMain)
+    .pipe($.plumber({errorHandler: $.on.error}))
+    <% if (has.sourcemaps) { %>.pipe($.sourcemaps.init())<% } %>
+    .pipe($.<%= plugin %>(config || {}))
+    .pipe($.filter('**/*.css'))
+    <% if (has.autoprefixer) { %>.pipe($.autoprefixer($.config.autoprefixer))<% } %>
+    <% if (has.sourcemaps) { %>.pipe($.sourcemaps.write())<% } %>
+    .pipe(gulp.dest($.paths.styles.dest))
+    .pipe($.size({title: '<%= name %>'}))<% if (has.server) { %>
+    .pipe($.if($.config.live, $.reloadStream()))<% } %>;
+});
+
+gulp.task('<%= name %>:watch', ['<%= name %>'], function () {
+  return $.watch($.paths.styles.srcFiles, {name: '<%= name %>'}, function (files) {
+    return gulp.start('<%= name %>');
+  });
+});

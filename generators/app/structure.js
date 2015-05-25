@@ -1,3 +1,4 @@
+var path = require('path');
 var _ = require('lodash');
 
 function Folder(name, parent) {
@@ -15,6 +16,18 @@ Folder.prototype.add = function () {
   this.__private.files.push(new File(this, arguments[0], arguments[1], arguments[2]));
 };
 
+Folder.prototype.has = function (fileName) {
+  var paths = fileName.split('/');
+  if (paths.length > 1) {
+    var child = paths.shift();
+    return this[child] && this[child].has(paths.join('/'));
+  } else {
+    return this.getFiles().reduce(function (acc, file) {
+      return acc || file.getName() === fileName;
+    }, false);
+  }
+};
+
 Folder.prototype.addFolder = function (folderName) {
   this[folderName] = new Folder(folderName, this);
 };
@@ -29,7 +42,7 @@ Folder.prototype.getPath = function () {
   } else if (this.getParent().isRoot()) {
     return this.getName();
   } else {
-    return this.getParent().getPath() + '/' + this.getName();
+    return path.join(this.getParent().getPath(), this.getName());
   }
 };
 
@@ -124,15 +137,19 @@ function File(folder, generator, name, finalName) {
 
 File.prototype.getName = function () { return this.name; };
 
+File.prototype.getFinalName = function () {
+  return this.finalName && this.generator.render(this.finalName, this.generator.context) || this.getName();
+};
+
 File.prototype.getTemplatePath = function () {
-  return this.folder.getPath() + (this.folder.isRoot() ? '' : '/') + this.name;
+  return path.join(this.folder.getPath(), this.getName());
 };
 
 File.prototype.getDestinationPath = function () {
-  return this.folder.getPath() + (this.folder.isRoot() ? '' : '/') + (this.finalName || this.name);
+  return path.join(this.folder.getPath(), this.getFinalName());
 };
 
-File.prototype.toString = function () { return this.getName(); };
+File.prototype.toString = function () { return this.getFinalName() };
 
 module.exports = {
   Folder: Folder,

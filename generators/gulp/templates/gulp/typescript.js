@@ -5,9 +5,7 @@ var compile = $.lazypipe()
   .pipe($.plumber, {errorHandler: $.on.error})
   .pipe($.sourcemaps.init)
   .pipe($.typescript)
-  //@ifdef angularjs
-  .pipe($.ngAnnotate)
-  //@endif
+  <% if (has.angular) { %>.pipe($.ngAnnotate)<% } %>
   .pipe($.sourcemaps.write)
   .pipe(gulp.dest, $.paths.scripts.dest)
   .pipe(function () {

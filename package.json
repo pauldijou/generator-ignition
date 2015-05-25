@@ -28,7 +28,8 @@
     "yeoman-generator": "^0.20.0",
     "chalk": "^1.0.0",
     "yosay": "^1.0.2",
-    "lodash": "^3.8.0"
+    "lodash": "^3.8.0",
+    "ejs": "^2.3.1"
   },
   "devDependencies": {
     "mocha": "*"

@@ -4,7 +4,6 @@ var utils       = require('./utils');
 
 // Expose all Gulp plugins found
 module.exports = plugins;
-
 <% if (has.server) { %>
 // Expose some functions to manage live reloading
 var browserSync = require('browser-sync');
@@ -14,18 +13,18 @@ module.exports.reload = browserSync.reload;
 module.exports.reloadStream = function () {
   return browserSync.reload({stream: true});
 };
-
 <% } %>
 // Expose some other modules (local or not)
+module.exports.utils      = utils;
+module.exports.paths      = require('./paths');
+module.exports.del        = require('del');
 module.exports.through2   = require('through2');
 module.exports.lazypipe   = require('lazypipe');
+module.exports.source     = require('vinyl-source-stream');
 <% if (has.browserify) { %>
 module.exports.browserify = require('browserify');
 module.exports.watchify   = require('watchify');
 <% } %>
-module.exports.source     = require('vinyl-source-stream');
-module.exports.paths      = require('./paths');
-module.exports.utils      = utils;
 
 // Expose common useful filters
 module.exports.filters = {
@@ -44,7 +43,11 @@ module.exports.on = {
 };
 
 // Expose all supported args from command line
-module.exports.config = {
+var config = module.exports.config = {
+  styles: [],
+  scripts: [],
+  frameworks: [],
+  watch: argv.watch === undefined || argv.watch !== 'false',
   mocked: argv.mocked || argv.m,
   latency: argv.latency || 100,
   port: parseInt(argv.port, 10) || 8000,
@@ -52,3 +55,6 @@ module.exports.config = {
   live: argv.live === undefined || argv.live !== 'false',
   autoprefixer: argv.autoprefixer && JSON.parse(argv.autoprefixer) || ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1']
 };
+
+<% if (has.style && !has.css) { %> config.styles.push('<%= props.style %>'); <% } %>
+<% if (has.script && !has.javascript) { %> config.scripts.push('<%= props.script %>'); <% } %>

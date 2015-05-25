@@ -9,12 +9,20 @@ module.exports = Base.extend({
 
   configuring: function () {
     var props = this.context.props;
+    var has = this.context.has;
     var npm = [];
     var npmDev = [];
     var bower = [];
 
     this.structure.addFolder('gulp');
     this.structure.gulp.addFolder('utils');
+
+    npmDev.push('require-dir');
+    npmDev.push("del");
+    npmDev.push("yargs");
+    npmDev.push("through2");
+    npmDev.push("lazypipe");
+    npmDev.push("vinyl-source-stream");
 
     npmDev.push('gulp');
     npmDev.push('gulp-load-plugins');
@@ -26,12 +34,12 @@ module.exports = Base.extend({
     npmDev.push("gulp-rev");
     npmDev.push("gulp-watch");
     npmDev.push("gulp-plumber");
-    npmDev.push("gulp-rimraf");
 
     this.structure.add(this, 'gulpfile.js');
     this.structure.gulp.utils.add(this, '$.js');
     this.structure.gulp.utils.add(this, 'onError.js');
     this.structure.gulp.utils.add(this, 'utils.js');
+    this.structure.gulp.utils.add(this, '../../../../app/templates/paths.js', 'paths.js');
     this.structure.gulp.add(this, 'build.js');
     this.structure.gulp.add(this, 'clean.js');
     this.structure.gulp.add(this, 'watch.js');
@@ -66,12 +74,17 @@ module.exports = Base.extend({
         break;
     }
 
-    if (props.autoprefixer) {
+    if (has.autoprefixer) {
       npmDev.push('gulp-autoprefixer');
     }
 
-    if (props.sourcemaps) {
+    if (has.sourcemaps) {
       npmDev.push('gulp-sourcemaps');
+    }
+
+    if (has.server) {
+      npmDev.push('browser-sync');
+      this.structure.gulp.add(this, 'serve.js');
     }
 
     if (props.test === 'karma') {

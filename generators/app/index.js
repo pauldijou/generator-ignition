@@ -5,18 +5,10 @@ var versions = require('./versions');
 var Context = require('./context');
 var Base = require('./base');
 var structure = require('./structure');
-var versions = require('./versions');
 
 module.exports = Base.extend({
   initializing: {
     options: function () {
-      // console.log(this.engine);
-      // this.remote('pauldijou', 'gulp-kickoff', function (error, remote) {
-      //   console.log(remote.engine);
-      //   console.log(remote);
-      //   remote.template('package.json', './package.json');
-      // });
-      console.log(__dirname);
       this.option('debug');
       this.option('verbose');
     },
@@ -47,7 +39,6 @@ module.exports = Base.extend({
 
     this.prompt(prompts, function (props) {
       this.props = props;
-      this.delimiter();
       done();
     }.bind(this));
   },
@@ -59,7 +50,6 @@ module.exports = Base.extend({
     var bower = [];
 
     this.structure.add(this, 'gitignore', '.gitignore');
-    this.structure.add(this, '_package.json', 'package.json');
 
     if (props.build) {
       this.context.has.build = true;
@@ -122,11 +112,22 @@ module.exports = Base.extend({
   },
 
   composition: function () {
+    this.delimiter();
     this.getGenerators().forEach(function (gen) {
       if (this.context.has[gen]) {
         this._composeWith(gen);
       }
-    }.bind(this))
+    }.bind(this));
+  },
+
+  packaging: function () {
+    if (this.context.npm.length > 0 || this.context.npmDev.length > 0) {
+      this.structure.add(this, '_package.json', 'package.json');
+    }
+
+    if (this.context.bower.length > 0) {
+      this.structure.add(this, '_bower.json', 'bower.json');
+    }
   },
 
   organization: function () {
@@ -189,45 +190,42 @@ module.exports = Base.extend({
   },
 
   _getDestinationOf: function (file) {
-    // return this.destinationPath(this.engine(file.getDestinationPath(), this.context));
     return this.destinationPath(file.getDestinationPath());
   },
 
   writing: function () {
     this.delimiter();
     this.log('Thanks for all your answers! Time for me to work now.');
+    this.log('');
 
     this.structure.forEachFile(function (file) {
       var from = this._getTemplateOf(file);
       var to = this._getDestinationOf(file);
       this.debug('Templating from ' + from + ' to ' + to);
-      this.template(from, to, this.context)
+      this.template(from, to, this.context),
+      {rmWhitespace: true}
     }.bind(this));
   },
 
   _appendVersion: function (dependencies) {
     return dependencies.map(function (dep) {
-      if (versions[dep]) {
-        return dep + '@' + versions[dep];
+      if (this.context.versions[dep]) {
+        return dep + '@' + this.context.versions[dep];
+      } else {
+        this.warn('No version for dependency ' + dep);
+        return dep;
       }
-    });
+    }.bind(this));
   },
 
-  install: {
-    dependencies: function () {
-      var dependencies = this._appendVersion(this.context.npm)
+  install: function () {
+    if (this.structure.has('_package.json')) {
+      this.npmInstall(this._appendVersion(this.context.npm), { 'save': true });
+      this.npmInstall(this._appendVersion(this.context.npmDev), { 'saveDev': true });
+    }
 
-      if (dependencies.length > 0) {
-        // this.npmInstall(dependencies, { 'save': true })
-      }
-    },
-
-    devDependencies: function () {
-      var devDependencies = this._appendVersion(this.context.npmDev)
-
-      if (devDependencies.length > 0) {
-        // this.npmInstall(devDependencies, { 'saveDev': true })
-      }
+    if (this.structure.has('_bower.json')) {
+      this.bowerInstall(this._appendVersion(this.context.bower), { 'save': true });
     }
   },
 
@@ -252,5 +250,7 @@ module.exports = Base.extend({
     this._displayMessages('success', 'Success', 'green');
     this._displayMessages('warn', 'Warnings', 'yellow');
     this._displayMessages('error', 'Errors', 'red');
+    this.log('');
+    this.log('');
   }
 });

@@ -1,6 +1,6 @@
 {
-  "name": "package",
-  "version": "0.0.0",
-  "dependencies": {}
+  "name": "<%= props.name %>",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {}
 }
-

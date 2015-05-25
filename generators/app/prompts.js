@@ -63,6 +63,7 @@ module.exports = function (generator) {
     choices: [
       {name: 'Browserify', value: 'browserify'},
       {name: 'SystemJS', value: 'systemjs'},
+      {name: 'RequireJS', value: 'requirejs'},
       {name: 'Nope', value: false}
     ],
     when: hasBuild
