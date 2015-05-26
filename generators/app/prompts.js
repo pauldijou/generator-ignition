@@ -94,6 +94,35 @@ module.exports = function (generator) {
     when: hasBuild
   }, {
     type: 'list',
+    name: 'framework',
+    message: 'Do you want to use one of those framework?',
+    choices: [
+      {name: 'Angular', value: 'angular'},
+      {name: 'Angular 2', value: 'angular2'},
+      {name: 'Aurelia', value: 'aurelia'},
+      {name: 'Ember', value: 'ember'}
+    ]
+  }, {
+    type: 'checkbox',
+    name: 'libs',
+    message: 'Maybe some libs?',
+    choices: [
+      {name: 'jQuery', value: 'jquery'},
+      {name: 'D3', value: 'd3'},
+      {name: 'Font Awesome', value: 'fontawesome'},
+      {name: 'Normalize.css', value: 'normalize'},
+      {name: 'Modernizr', value: 'modernizr'}
+    ]
+  }, {
+    type: 'checkbox',
+    name: 'polyfills',
+    message: 'What about some polyfills?',
+    store: true,
+    choices: [
+      {name: 'Promise', value: 'promise'}
+    ]
+  }, {
+    type: 'list',
     name: 'test',
     message: 'Do you want to run some tests? If so, please pick a test runner',
     default: 'karma',

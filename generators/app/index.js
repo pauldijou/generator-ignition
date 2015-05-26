@@ -260,7 +260,7 @@ module.exports = Base.extend({
 
   _displayMessages: function (property, title, color) {
     if (this.context[property].length > 0) {
-      this.log('--------------------------------------------------------------------');
+      this.log('-------------------------------------------------------------');
       this.log('- ' + chalk[color].bold(title));
       this.log('------------------');
       this.log('');
