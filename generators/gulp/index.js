@@ -24,6 +24,11 @@ module.exports = Base.extend({
     npmDev.push("lazypipe");
     npmDev.push("vinyl-source-stream");
 
+    if (has.server) {
+      npmDev.push('browser-sync');
+      this.structure.gulp.add(this, 'serve.js');
+    }
+
     npmDev.push('gulp');
     npmDev.push('gulp-load-plugins');
     npmDev.push("gulp-if");
@@ -59,19 +64,44 @@ module.exports = Base.extend({
         break;
     }
 
-    switch (props.script) {
-      case 'sass':
-        this.structure.gulp.add(this, 'sass.js');
-        npmDev.push('gulp-sass');
-        break;
-      case 'less':
-        this.structure.gulp.add(this, 'less.js');
-        npmDev.push('gulp-less');
-        break;
-      case 'stylus':
-        this.structure.gulp.add(this, 'stylus.js');
-        npmDev.push('gulp-stylus');
-        break;
+    if (has.browserify) {
+      this.structure.gulp.add(this, 'browserify.js');
+      npmDev.push('browserify');
+      npmDev.push('watchify');
+
+      switch (props.script) {
+        case 'babel':
+          npmDev.push('babelify');
+          break;
+        case 'traceur':
+          npmDev.push('es6ify');
+          break;
+        case 'coffeescript':
+          npmDev.push('coffeeify');
+          break;
+        case 'typescript':
+          npmDev.push('tsify');
+          break;
+      }
+    } else {
+      switch (props.script) {
+        case 'babel':
+          this.structure.gulp.add(this, 'babel.js');
+          npmDev.push('gulp-babel');
+          break;
+          case 'traceur':
+            this.structure.gulp.add(this, 'traceur.js');
+            npmDev.push('gulp-traceur');
+            break;
+        case 'coffeescript':
+          this.structure.gulp.add(this, 'coffee.js');
+          npmDev.push('gulp-coffee');
+          break;
+        case 'typescript':
+          this.structure.gulp.add(this, 'typescript.js');
+          npmDev.push('gulp-typescript');
+          break;
+      }
     }
 
     if (has.autoprefixer) {
@@ -80,11 +110,6 @@ module.exports = Base.extend({
 
     if (has.sourcemaps) {
       npmDev.push('gulp-sourcemaps');
-    }
-
-    if (has.server) {
-      npmDev.push('browser-sync');
-      this.structure.gulp.add(this, 'serve.js');
     }
 
     if (props.test === 'karma') {

@@ -1,6 +1,3 @@
-var gulp    = require('gulp');
-var $       = require('./utils/$');
-
 var config = {
   paths: [
     $.paths.npm.src,

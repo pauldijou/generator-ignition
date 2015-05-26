@@ -1,0 +1,22 @@
+{
+  "name": "<%= props.name %>",
+  "version": "0.0.1",
+  "description": "",
+  "license": "",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "dependencies": {
+<% npm.forEach(function (dep, idx) { -%>
+    "<%= dep %>": "<%= versions[dep] %>"<%= (idx+1 < npm.length) ? ',' : '' %>
+<% }); -%>
+  },
+  "devDependencies": {
+<% npmDev.forEach(function (dep, idx) { -%>
+    "<%= dep %>": "<%= versions[dep] %>"<%= (idx+1 < npmDev.length) ? ',' : '' %>
+<% }); -%>
+  }
+}

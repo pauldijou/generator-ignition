@@ -1,11 +1,6 @@
-var gulp    = require('gulp');
-var $       = require('./utils/$');
-
 var config = {
   style: 'expanded',
   precision: 10,
-  'sourcemap=file': true,
-  sourcemapPath: '../../scripts',
   loadPath: [
     $.paths.npm.src,
     $.paths.bower.src,

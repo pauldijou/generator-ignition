@@ -8,9 +8,10 @@ function Context(opts) {
   this.versions = opts.versions || [];
   this.has = {};
 
-  this.bower = [];
   this.npm = [];
   this.npmDev = [];
+  this.bower = [];
+  this.bowerDev = [];
 
   this.info = [];
   this.warn = [];
@@ -32,6 +33,7 @@ Context.prototype.addGeneratorContext = function (context) {
   this.concatUniq('npm', context.npm);
   this.concatUniq('npmDev', context.npmDev);
   this.concatUniq('bower', context.bower);
+  this.concatUniq('bowerDev', context.bowerDev);
 }
 
 Context.prototype.info = function (msg) { this.info.push(msg); }

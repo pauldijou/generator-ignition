@@ -1,11 +1,8 @@
-var gulp    = require('gulp');
-var $       = require('./utils/$');
-
 var config = {
   sourcemap: {
     inline: true,
     sourceRoot: '.',
-    basePath: 'styles'
+    basePath: $.paths.scripts.src
   }
 };
 

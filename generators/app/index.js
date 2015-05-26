@@ -50,11 +50,13 @@ module.exports = Base.extend({
     var bower = [];
 
     this.structure.add(this, 'gitignore', '.gitignore');
+    this.structure.add(this, 'index.html');
 
     if (props.build) {
       this.context.has.build = true;
       this.context.has[props.build] = true;
       this.structure.addFolder('build');
+      this.structure.addFolder('deploy');
     }
 
     if (props.style) {
@@ -68,6 +70,17 @@ module.exports = Base.extend({
       this.context.has[props.script] = true;
       this.structure.addFolder('scripts');
     }
+
+    if (props.images) {
+      this.context.has.images = true;
+      this.structure.addFolder('images');
+
+      if (props.icons) {
+        this.context.has.icons = true;
+        this.structure.images.addFolder('icons');
+      }
+    }
+
 
     props.buildOthers.forEach(function (o) {
       this.context.has[o] = true;
@@ -92,6 +105,24 @@ module.exports = Base.extend({
         break;
       case 'css':
         this.structure.styles.add(this, 'app.css');
+        break;
+    }
+
+    switch (props.script) {
+      case 'babel':
+        this.structure.scripts.add(this, 'app.es6', 'app.js');
+        break;
+      case 'traceur':
+        this.structure.scripts.add(this, 'app.es6', 'app.js');
+        break;
+      case 'coffeescript':
+        this.structure.scripts.add(this, 'app.coffee');
+        break;
+      case 'typescript':
+        this.structure.scripts.add(this, 'app.ts');
+        break;
+      case 'javascript':
+        this.structure.scripts.add(this, 'app.js');
         break;
     }
 
@@ -122,11 +153,11 @@ module.exports = Base.extend({
 
   packaging: function () {
     if (this.context.npm.length > 0 || this.context.npmDev.length > 0) {
-      this.structure.add(this, '_package.json', 'package.json');
+      this.structure.add(this, 'package.ejs', 'package.json');
     }
 
     if (this.context.bower.length > 0) {
-      this.structure.add(this, '_bower.json', 'bower.json');
+      this.structure.add(this, 'bower.ejs', 'bower.json');
     }
   },
 
@@ -202,8 +233,7 @@ module.exports = Base.extend({
       var from = this._getTemplateOf(file);
       var to = this._getDestinationOf(file);
       this.debug('Templating from ' + from + ' to ' + to);
-      this.template(from, to, this.context),
-      {rmWhitespace: true}
+      this.fs.copyTpl(from, to, this.context)
     }.bind(this));
   },
 
@@ -219,13 +249,12 @@ module.exports = Base.extend({
   },
 
   install: function () {
-    if (this.structure.has('_package.json')) {
-      this.npmInstall(this._appendVersion(this.context.npm), { 'save': true });
-      this.npmInstall(this._appendVersion(this.context.npmDev), { 'saveDev': true });
+    if (this.structure.has('package.ejs')) {
+      this.npmInstall('');
     }
 
-    if (this.structure.has('_bower.json')) {
-      this.bowerInstall(this._appendVersion(this.context.bower), { 'save': true });
+    if (this.structure.has('bower.ejs')) {
+      this.bowerInstall('');
     }
   },
 

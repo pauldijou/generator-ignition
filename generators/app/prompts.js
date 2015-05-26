@@ -62,8 +62,8 @@ module.exports = function (generator) {
     store: true,
     choices: [
       {name: 'Browserify', value: 'browserify'},
-      {name: 'SystemJS', value: 'systemjs'},
-      {name: 'RequireJS', value: 'requirejs'},
+      // {name: 'SystemJS', value: 'systemjs'},
+      // {name: 'RequireJS', value: 'requirejs'},
       {name: 'Nope', value: false}
     ],
     when: hasBuild
@@ -76,7 +76,8 @@ module.exports = function (generator) {
     choices: [
       {name: 'NPM', value: 'npm'},
       {name: 'Bower', value: 'bower'},
-      {name: 'jspm', value: 'jspm'},
+      // {name: 'jspm', value: 'jspm'},
+      // {name: 'Component', value: 'component'},
       {name: 'None', value: false}
     ],
     when: hasBuild

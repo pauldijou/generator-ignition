@@ -1,3 +1,6 @@
+var gulp = require('gulp');
+var $    = require('./utils/$');
+
 gulp.task('<%= name %>', ['clean:styles'], function () {
   return gulp.src($.paths.styles.srcMain)
     .pipe($.plumber({errorHandler: $.on.error}))
@@ -6,8 +9,7 @@ gulp.task('<%= name %>', ['clean:styles'], function () {
     .pipe($.filter('**/*.css'))
     <% if (has.autoprefixer) { %>.pipe($.autoprefixer($.config.autoprefixer))<% } %>
     <% if (has.sourcemaps) { %>.pipe($.sourcemaps.write())<% } %>
-    .pipe(gulp.dest($.paths.styles.dest))
-    .pipe($.size({title: '<%= name %>'}))<% if (has.server) { %>
+    .pipe(gulp.dest($.paths.styles.dest))<% if (has.server) { %>
     .pipe($.if($.config.live, $.reloadStream()))<% } %>;
 });
 

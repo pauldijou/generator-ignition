@@ -1,5 +1,5 @@
-var gulp    = require('gulp');
-var $       = require('./utils/$');
+var gulp = require('gulp');
+var $    = require('./utils/$');
 
 gulp.task('images', ['deploy:clean', 'icons'], function () {
   return gulp.src($.paths.images.all, {base: '.'})

@@ -11,9 +11,20 @@ function Folder(name, parent) {
 
 Folder.prototype.isRoot = function () { return !this.__private.parent; };
 
-// If only we had the magic "..." operator...
-Folder.prototype.add = function () {
-  this.__private.files.push(new File(this, arguments[0], arguments[1], arguments[2]));
+Folder.prototype.add = function (generator, name, finalName) {
+  if (this.has(name)) {
+    generator.error('Folder ' + this.getName() + ' already has a file ' + name);
+  } else {
+    this.__private.files.push(new File(this, generator, name, finalName));
+  }
+};
+
+Folder.prototype.override = function (generator, name, finalName) {
+  this.__private.files = this.__private.files.filter(function (file) {
+    return file.name !== name;
+  });
+
+  this.__private.files.push(new File(this, generator, name, finalName));
 };
 
 Folder.prototype.has = function (fileName) {

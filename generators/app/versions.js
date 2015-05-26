@@ -5,10 +5,17 @@ module.exports = {
   "lazypipe": "0.2.x",
   "yargs": "3.9.x",
   "require-dir": "0.3.x",
-  "browserify": "10.2.x",
-  "watchify": "3.2.x",
   "del": "1.2.x",
 
+  // Browserify
+  "browserify": "10.2.x",
+  "watchify": "3.2.x",
+  "babelify": "6.1.x",
+  "es6ify": "1.6.x",
+  "coffeeify": "1.1.x",
+  "tsify": "0.11.0",
+
+  // Karma
   "karma": "0.12.x",
   "karma-jasmine": "0.3.x",
   "karma-chrome-launcher": "0.1.x",

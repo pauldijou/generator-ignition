@@ -1,0 +1,14 @@
+{
+  "name": "<%= props.name %>",
+  "version": "0.0.1",
+  "dependencies": {
+<% bower.forEach(function (dep, idx) { -%>
+    "<%= dep %>": "<%= versions[dep] %>"<%= (idx+1 < bower.length) ? ',' : '' %>
+<% }); -%>
+  },
+  "devDependencies": {
+<% bowerDev.forEach(function (dep, idx) { -%>
+    "<%= dep %>": "<%= versions[dep] %>"<%= (idx+1 < bowerDev.length) ? ',' : '' %>
+<% }); -%>
+  }
+}

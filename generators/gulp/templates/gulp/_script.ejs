@@ -1,0 +1,14 @@
+var gulp = require('gulp');
+var $    = require('./utils/$');
+
+gulp.task('<%= plugin %>', ['clean:scripts'], function () {
+  return gulp.src($.paths.scripts.srcFiles)
+    .pipe($.watch($.paths.scripts.srcFiles))
+    .pipe($.plumber({errorHandler: $.on.error}))<% if (has.sourcemaps) { %>
+    .pipe($.sourcemaps.init())<% } %>
+    .pipe($.<%= plugin %>(config))<% if (has.angular || has.angular2) { %>
+    .pipe($.ngAnnotate)<% } %><% if (has.sourcemaps) { %>
+    .pipe($.sourcemaps.write())<% } %>
+    .pipe(gulp.dest($.paths.scripts.dest))<% if (has.server) { %>
+    .pipe($.if($.config.live, $.reloadStream()))<% } %>;
+});
