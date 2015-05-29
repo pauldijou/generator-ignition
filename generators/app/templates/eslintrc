@@ -1,0 +1,13 @@
+{
+  "parser": "<%= has.babel ? 'babel-eslint' : 'espree' %>",
+  "env": {
+    "brower": true,
+    "es6": true
+  },
+  "ecmaFeatures": {
+    "jsx": <%= has.react ? 'true': 'false' %>
+  },
+  "rules": {
+
+  }
+}

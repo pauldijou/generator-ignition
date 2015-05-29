@@ -2,16 +2,17 @@
 // relative to your project root
 
 var folders = {
-  <% if (has.script) { %>scripts: '<%= structure.scripts.getName() %>',<% } -%>
-  <% if (has.style) { %>styles: '<%= structure.styles.getName() %>',<% } -%>
-  <% if (has.images) { %>images: '<%= structure.images.getName() %>',<% } -%>
-  <% if (has.icons) { %>icons: '<%= structure.images.icons.getName() %>',<% } -%>
-  <% if (has.templates) { %>templates: '<%= structure.templates.getName() %>',<% } -%>
-  <% if (has.build) { %>build: '<%= structure.build.getName() %>',<% } -%>
-  <% if (has.build) { %>deploy: '<%= structure.deploy.getName() %>',<% } -%>
-  <% if (has.test) { %>test: '<%= structure.test.getName() %>',<% } -%>
-  <% if (has.test) { %>unit: '<%= structure.unit.getName() %>',<% } -%>
-  <% if (has.test) { %>e2e: '<%= structure.e2e.getName() %>',<% } -%>
+  <% if (has.script) { %>scripts: '<%= structure.scripts.getName() %>',<% } %>
+  <% if (has.style) { %>styles: '<%= structure.styles.getName() %>',<% } %>
+  <% if (has.images) { %>images: '<%= structure.images.getName() %>',<% } %>
+  <% if (has.icons) { %>icons: '<%= structure.images.icons.getName() %>',<% } %>
+  <% if (has.templates) { %>templates: '<%= structure.templates.getName() %>',<% } %>
+  <% if (has.build) { %>build: '<%= structure.build.getName() %>',<% } %>
+  <% if (has.build) { %>dist: '<%= structure.dist.getName() %>',<% } %>
+  <% if (has.test) { %>test: '<%= structure.test.getName() %>',<% } %>
+  <% if (has.test) { %>unit: '<%= structure.test.unit.getName() %>',<% } %>
+  <% if (has.test) { %>e2e: '<%= structure.test.e2e.getName() %>',<% } %>
+  <% if (has.vendors) { %>vendors: '<%= structure.vendors.getName() %>',<% } %>
   bower: 'bower_components',
   npm: 'node_modules'
 };
@@ -65,14 +66,14 @@ module.exports = {
   <% if (has.icons) { %>icons: {
     src: getPath('images', 'icons'),
     srcFiles: getPath('images', 'icons') +'/**/*.svg',
-    dest: getBuildPath('images') + '/icons',
-    destFiles: getBuildPath('images') + '/icons/**/*.svg'<% } %>
+    dest: getBuildPath('images'),
+    destFiles: getBuildPath('images') + '/icons.svg'
   },<% } %>
   <% if (has.build) { %>build: {
     src: getPath('build')
   },
-  deploy: {
-    src: getPath('deploy')
+  dist: {
+    src: getPath('dist')
   },<% } %>
   <% if (has.test) { %>test: {
     unit: {

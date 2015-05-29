@@ -2,5 +2,5 @@ node_modules
 bower_components
 <% if (props.build) { -%>
 <%= structure.build.getPath(); %>
-<%= structure.deploy.getPath(); %>
+<%= structure.dist.getPath(); %>
 <% } %>

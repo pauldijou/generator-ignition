@@ -1,10 +1,23 @@
 var gulp = require('gulp');
 var $    = require('./utils/$');
+<%
+var linter = '$.eslint()';
+var reporter = '$.eslint.format(\'stylish\')';
 
+if (has.coffeescript) {
+  linter = '$.coffeelint()';
+  reporter = '$.coffeelint.reporter(require(\'coffeelint-stylish\'))'
+} else if (has.typescript) {
+  linter = '$.tslint()';
+  reporter = '$.tslint.report(\'prose\')';
+}
+-%>
 gulp.task('<%= plugin %>', ['clean:scripts'], function () {
   return gulp.src($.paths.scripts.srcFiles)
-    .pipe($.watch($.paths.scripts.srcFiles))
-    .pipe($.plumber({errorHandler: $.on.error}))<% if (has.sourcemaps) { %>
+    .pipe($.if($.config.watch, $.watch($.paths.scripts.srcFiles)))
+    .pipe($.plumber({errorHandler: $.on.error}))<% if (has.jslint) { %>
+    .pipe(<%= linter %>)
+    .pipe(<%= reporter %>)<% } %><% if (has.sourcemaps) { %>
     .pipe($.sourcemaps.init())<% } %>
     .pipe($.<%= plugin %>(config))<% if (has.angular || has.angular2) { %>
     .pipe($.ngAnnotate)<% } %><% if (has.sourcemaps) { %>

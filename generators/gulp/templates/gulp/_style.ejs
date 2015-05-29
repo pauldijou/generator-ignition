@@ -1,20 +1,24 @@
 var gulp = require('gulp');
 var $    = require('./utils/$');
 
-gulp.task('<%= name %>', ['clean:styles'], function () {
+gulp.task('<%= name %>:once', ['clean:styles'], function () {
   return gulp.src($.paths.styles.srcMain)
-    .pipe($.plumber({errorHandler: $.on.error}))
-    <% if (has.sourcemaps) { %>.pipe($.sourcemaps.init())<% } %>
+    .pipe($.plumber({errorHandler: $.on.error}))<% if (has.sourcemaps) { %>
+    .pipe($.sourcemaps.init())<% } %>
     .pipe($.<%= plugin %>(config || {}))
-    .pipe($.filter('**/*.css'))
-    <% if (has.autoprefixer) { %>.pipe($.autoprefixer($.config.autoprefixer))<% } %>
-    <% if (has.sourcemaps) { %>.pipe($.sourcemaps.write())<% } %>
+    .pipe($.filter('**/*.css'))<% if (has.autoprefixer) { %>
+    .pipe($.autoprefixer($.config.autoprefixer))<% } %><% if (has.csslint) { %>
+    .pipe($.csslint())
+    .pipe($.csslint.reporter())<% } %><% if (has.sourcemaps) { %>
+    .pipe($.sourcemaps.write())<% } %>
     .pipe(gulp.dest($.paths.styles.dest))<% if (has.server) { %>
     .pipe($.if($.config.live, $.reloadStream()))<% } %>;
 });
 
-gulp.task('<%= name %>:watch', ['<%= name %>'], function () {
+gulp.task('<%= name %>:watch', ['<%= name %>:once'], function () {
   return $.watch($.paths.styles.srcFiles, {name: '<%= name %>'}, function (files) {
-    return gulp.start('<%= name %>');
+    return gulp.start('<%= name %>:once');
   });
 });
+
+gulp.task('<%= name %>', [$.config.watch ? '<%= name %>:watch' : '<%= name %>:once']);

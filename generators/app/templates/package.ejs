@@ -1,3 +1,17 @@
+<%
+var buildScript = '';
+var startScript = '';
+var deployScript = '';
+var testScript = '';
+
+if (has.gulp ) {
+  buildScript = 'gulp --no-watch';
+  startScript = 'gulp';
+  deployScript = 'gulp deloy';
+  testScript = 'gulp test';
+}
+
+-%>
 {
   "name": "<%= props.name %>",
   "version": "0.0.1",
@@ -8,6 +22,12 @@
     "name": "",
     "email": "",
     "url": ""
+  },
+  "scripts": {
+    "build": "<%= buildScript %>",
+    "start": "<%= startScript %>",
+    "deploy": "<%= deployScript %>",
+    "test": "<%= testScript %>"
   },
   "dependencies": {
 <% npm.forEach(function (dep, idx) { -%>

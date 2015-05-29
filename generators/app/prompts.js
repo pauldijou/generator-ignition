@@ -3,10 +3,11 @@
 module.exports = function (generator) {
   var has = generator.prompts.has;
   var is = generator.prompts.is;
-  var hasBuild = has('build');
+  var and = generator.prompts.and;
+  var or = generator.prompts.or;
   var hasStyle = has('style');
   var hasScript = has('script');
-  var compose = generator.prompts.compose;
+  var hasBuild = or(has('gulp'), has('grunt'), has('broccoli'), has('brunch'));
 
   return [{
     type: 'input',
@@ -23,6 +24,8 @@ module.exports = function (generator) {
       // {name: 'Grunt', value: 'grunt'},
       // {name: 'Brunch', value: 'brunch'},
       // {name: 'Broccoli', value: 'broccoli'},
+      // {name: 'Component', value: 'component'},
+      // {name: 'Duo', value: 'duo'},
       {name: 'None of them, I have my own stuff', value: false}
     ]
   }, {
@@ -76,11 +79,32 @@ module.exports = function (generator) {
     choices: [
       {name: 'NPM', value: 'npm'},
       {name: 'Bower', value: 'bower'},
-      // {name: 'jspm', value: 'jspm'},
-      // {name: 'Component', value: 'component'},
+      {name: 'jspm', value: 'jspm'},
       {name: 'None', value: false}
     ],
     when: hasBuild
+  }, {
+    type: 'list',
+    name: 'csslint',
+    message: 'Do you want to lint your CSS code?',
+    default: true,
+    store: true,
+    choices: [
+      {name: 'Please, do so.', value: true},
+      {name: 'Nope', value: false}
+    ],
+    when: and(hasBuild, has('css'))
+  }, {
+    type: 'list',
+    name: 'jslint',
+    message: 'Do you want to lint your JavaScript code?',
+    default: true,
+    store: true,
+    choices: [
+      {name: 'Sir, yes sir!', value: true},
+      {name: 'No linting', value: false}
+    ],
+    when: and(hasBuild, has('script'))
   }, {
     type: 'checkbox',
     name: 'buildOthers',
@@ -100,7 +124,8 @@ module.exports = function (generator) {
       {name: 'Angular', value: 'angular'},
       {name: 'Angular 2', value: 'angular2'},
       {name: 'Aurelia', value: 'aurelia'},
-      {name: 'Ember', value: 'ember'}
+      {name: 'Ember', value: 'ember'},
+      {name: 'None', value: false}
     ]
   }, {
     type: 'checkbox',

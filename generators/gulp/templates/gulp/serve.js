@@ -3,11 +3,11 @@ var $           = require('./utils/$');
 var fs          = require('fs');
 var browserSync = require('browser-sync');
 
-var prefix = '/api/v1';
+var prefix = $.config.mock;
 var prefixRegExp = new RegExp(prefix + '(.*)');
 var middleware;
 
-// Add some random (configurable) latency to mocked server
+// Add some random (configurable) latency to mock server
 // so we can simulate more or less slow network
 function jitterResponse(res, content) {
   setTimeout(function () {
@@ -46,13 +46,13 @@ function parseParams(query) {
   return params;
 }
 
-// Will create a middleware if $.config.mocked is true
+// Will create a middleware if $.config.mock is true
 // If so, it will intercept all requests starting with a prefix
-// (here '/api/v1') and return mocked data. It will first try
+// (here '/api/v1') and return mock data. It will first try
 // to load a JavaScript file as a node module at the same relative
 // path. If nothing found, it will try to load a JSON file and use
 // its content as the body for the response.
-if ($.config.mocked) {
+if ($.config.mock) {
   middleware = function (req, res, next) {
     path = req._parsedUrl.pathname;
 
@@ -98,26 +98,26 @@ if ($.config.mocked) {
     }
   };
 } else {
-  // If not mocked, do nothing
+  // If not mock, do nothing
   middleware = function (req, res, next) {
     next();
   };
 };
 
+var config = {
+  server: {
+    baseDir: './',
+    middleware: middleware
+  },
+  port: $.config.port,
+  open: false,
+  notify: false
+};
+
+if (!$.config.sync) {
+  config.ghostMode = false;
+}
+
 gulp.task('serve', function () {
-  var config = {
-    server: {
-      baseDir: './',
-      middleware: middleware
-    },
-    port: $.config.port,
-    open: false,
-    notify: false
-  };
-
-  if (!$.config.sync) {
-    config.ghostMode = false;
-  }
-
-  browserSync(config);
+  return browserSync(config);
 });

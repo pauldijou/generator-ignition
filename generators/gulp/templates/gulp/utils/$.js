@@ -1,6 +1,10 @@
 var plugins = require('gulp-load-plugins')();
 var argv    = require('yargs').argv;
 var utils   = require('./utils');
+var _       = require('lodash');
+
+// ----------------------------------------------------------------------------
+// Exposing stuff
 
 // Expose all Gulp plugins found
 module.exports = plugins;
@@ -50,19 +54,14 @@ module.exports.on = {
   error: require('./onError')
 };
 
-// Expose all supported args from command line
-var config = module.exports.config = {
+// ----------------------------------------------------------------------------
+// Configuration
+
+var config = module.exports.config = _.merge(require('./options'), {
   styles: [],
   scripts: [],
-  frameworks: [],
-  watch: argv.watch === undefined || argv.watch !== 'false',
-  mocked: argv.mocked || argv.m,
-  latency: argv.latency || 100,
-  port: parseInt(argv.port, 10) || 8000,
-  sync: argv.sync === undefined || argv.sync !== 'false',
-  live: argv.live === undefined || argv.live !== 'false',
-  autoprefixer: argv.autoprefixer && JSON.parse(argv.autoprefixer) || ['> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1']
-};
+  frameworks: []
+});
 
 <% if (has.style && !has.css) { -%>
 config.styles.push('<%= props.style %>');

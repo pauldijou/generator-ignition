@@ -4,11 +4,11 @@
   "description": "???",
   "license": "???",
   "main": "generators/app/index.js",
-  "repository": "pauldijou/wip",
+  "repository": "https://github.com/pauldijou/wip",
   "author": {
     "name": "Paul Dijou",
     "email": "paul.dijou@gmail.com",
-    "url": "https://github.com/pauldijou"
+    "url": "http://pauldijou.fr"
   },
   "scripts": {
     "test": "mocha"

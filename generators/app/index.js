@@ -2,12 +2,15 @@
 var chalk = require('chalk');
 var yosay = require('yosay');
 var versions = require('./versions');
-var Context = require('./context');
 var Base = require('./base');
 var structure = require('./structure');
 
 module.exports = Base.extend({
   initializing: {
+    clean: function () {
+      this.clean();
+    },
+
     options: function () {
       this.option('debug');
       this.option('verbose');
@@ -18,13 +21,13 @@ module.exports = Base.extend({
     },
 
     context: function () {
-      this.context = new Context({
-        structure: this.structure,
-        options: {
-          debug: this.options.debug,
-          verbose: this.options.verbose
-        }
-      });
+      this.context = require('./context');
+      this.context.generator = this;
+      this.context.structure = this.structure;
+      this.context.options = {
+        debug: this.options.debug,
+        verbose: this.options.verbose
+      };
     }
   },
 
@@ -45,6 +48,7 @@ module.exports = Base.extend({
 
   configuring: function () {
     var props = this.props;
+    var has = {};
     var npm = [];
     var npmDev = [];
     var bower = [];
@@ -53,41 +57,40 @@ module.exports = Base.extend({
     this.structure.add(this, 'index.html');
 
     if (props.build) {
-      this.context.has.build = true;
-      this.context.has[props.build] = true;
+      has.build = true;
+      has[props.build] = true;
       this.structure.addFolder('build');
-      this.structure.addFolder('deploy');
+      this.structure.addFolder('dist');
     }
 
     if (props.style) {
-      this.context.has.style = true;
-      this.context.has[props.style] = true;
+      has.style = true;
+      has[props.style] = true;
       this.structure.addFolder('styles');
     }
 
     if (props.script) {
-      this.context.has.script = true;
-      this.context.has[props.script] = true;
+      has.script = true;
+      has[props.script] = true;
       this.structure.addFolder('scripts');
     }
 
     if (props.images) {
-      this.context.has.images = true;
+      has.images = true;
       this.structure.addFolder('images');
 
       if (props.icons) {
-        this.context.has.icons = true;
+        has.icons = true;
         this.structure.images.addFolder('icons');
       }
     }
 
-
     props.buildOthers.forEach(function (o) {
-      this.context.has[o] = true;
-    }.bind(this));
+      has[o] = true;
+    });
 
     if (props.test) {
-      this.context.has.test = true;
+      has.test = true;
       this.structure.addFolder('test');
       this.structure.test.addFolder('unit');
       this.structure.test.addFolder('e2e');
@@ -126,9 +129,47 @@ module.exports = Base.extend({
         break;
     }
 
-    this.context.addGeneratorContext({
+    if (props.csslint) {
+      has.csslint = true;
+      this.structure.add(this, 'csslintrc', '.csslintrc');
+    }
+
+    if (props.jslint) {
+      has.jshint = true;
+
+      if (has.coffeescript) {
+        this.structure.add(this, 'coffeelint.ejs', 'coffeelint.json');
+      } else if (has.typescript) {
+        this.structure.add(this, 'tslint.ejs', 'tslint.json');
+      } else {
+        this.structure.add(this, 'eslintrc', '.eslintrc');
+      }
+    }
+
+    if (props.framework) {
+      has.framework = true;
+      has[props.framework] = true;
+    }
+
+    props.libs.forEach(function (l) {
+      has[l] = true;
+    });
+
+    // Test for libs which needs a 'vendors' folder
+    if (has.modernizr) {
+      has.vendors = true;
+      this.structure.add('vendors');
+    }
+
+    if (has.modernizr) {
+      this.info('You should use your own custom version of Modernizr depending on your requirements. We will put a "default" one just so the project can build but you should replace it as soon as possible with one downloaded from http://modernizr.com/download/ .');
+      this.structure.vendors.add(this, 'modernizr.js');
+    }
+
+    this.context.add({
       props: props,
       versions: versions,
+      has: has,
       npm: npm,
       npmDev: npmDev,
       bower: bower
@@ -152,16 +193,22 @@ module.exports = Base.extend({
   },
 
   packaging: function () {
+    // We need to install all packages now
+    // They might add new NPM or Bower dependencies
+    this.context.install();
+
+    // If we don't have any dependencies, it probably means we don't really
+    // need such files
     if (this.context.npm.length > 0 || this.context.npmDev.length > 0) {
       this.structure.add(this, 'package.ejs', 'package.json');
     }
 
-    if (this.context.bower.length > 0) {
+    if (this.context.bower.length > 0 || this.context.bowerDev.length > 0) {
       this.structure.add(this, 'bower.ejs', 'bower.json');
     }
   },
 
-  organization: function () {
+  structuring: function () {
     var self = this;
     var done = this.async();
     this.log('Here is the structure of the application I\'m about to create for you:');
@@ -232,20 +279,10 @@ module.exports = Base.extend({
     this.structure.forEachFile(function (file) {
       var from = this._getTemplateOf(file);
       var to = this._getDestinationOf(file);
-      this.debug('Templating from ' + from + ' to ' + to);
+      this.debug('Templating from ' + chalk.bold(from) + ' to ' + chalk.bold(to));
       this.fs.copyTpl(from, to, this.context)
     }.bind(this));
-  },
-
-  _appendVersion: function (dependencies) {
-    return dependencies.map(function (dep) {
-      if (this.context.versions[dep]) {
-        return dep + '@' + this.context.versions[dep];
-      } else {
-        this.warn('No version for dependency ' + dep);
-        return dep;
-      }
-    }.bind(this));
+    this.debug(' ');
   },
 
   install: function () {
@@ -258,27 +295,21 @@ module.exports = Base.extend({
     }
   },
 
-  _displayMessages: function (property, title, color) {
+  _displayMessages: function (propert, color) {
     if (this.context[property].length > 0) {
-      this.log('-------------------------------------------------------------');
-      this.log('- ' + chalk[color].bold(title));
-      this.log('------------------');
-      this.log('');
-
       this.context[property].forEach(function (msg) {
-        this.log(msg);
+        this.log('[' + chalk[color].bold(property.toUpperCase()) + '] ' + msg);
       }.bind(this));
 
-      this.log('');
       this.log('');
     }
   },
 
   end: function () {
-    this._displayMessages('info', 'Infos', 'cyan');
-    this._displayMessages('success', 'Success', 'green');
-    this._displayMessages('warn', 'Warnings', 'yellow');
-    this._displayMessages('error', 'Errors', 'red');
+    this._displayMessages('info', 'cyan');
+    this._displayMessages('success', 'green');
+    this._displayMessages('warn', 'yellow');
+    this._displayMessages('error', 'red');
     this.log('');
     this.log('');
   }

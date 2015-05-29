@@ -6,7 +6,8 @@ var cleaners = [
   {name: 'scripts'},
   {name: 'unit', path: $.paths.test.unit.dest},
   {name: 'e2e', path: $.paths.test.e2e.dest},
-  {name: 'deploy', path: $.paths.deploy.dir}
+  {name: 'dist', path: $.paths.dist.dir},
+  {name: 'icons', path: $.paths.icons.destFiles}
 ];
 
 cleaners.forEach(function (cleaner) {

@@ -92,8 +92,19 @@ Folder.prototype.rename = function (newName) {
   }
 };
 
+Folder.prototype.toPOJO = function (root) {
+  var res = {};
+  this.getFolders().forEach(function (f) {
+    res[f.getName()] = f.toPOJO();
+  });
+  this.getFiles().forEach(function (f) {
+    res[f.getName()] = f.finalName || f.getName();
+  });
+  return res;
+};
+
 Folder.prototype.toString = function () {
-  return this.getName();
+  return this.getPath();
 };
 
 Folder.prototype.toTuples = function (onlyFolders, prefixFolder, prefixContent) {
@@ -160,7 +171,7 @@ File.prototype.getDestinationPath = function () {
   return path.join(this.folder.getPath(), this.getFinalName());
 };
 
-File.prototype.toString = function () { return this.getFinalName() };
+File.prototype.toString = function () { return this.getTemplatePath() };
 
 module.exports = {
   Folder: Folder,

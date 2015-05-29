@@ -44,10 +44,9 @@ module.exports = Base.extend({
     this.structure.gulp.utils.add(this, '$.js');
     this.structure.gulp.utils.add(this, 'onError.js');
     this.structure.gulp.utils.add(this, 'utils.js');
-    this.structure.gulp.utils.add(this, '../../../../app/templates/paths.js', 'paths.js');
-    this.structure.gulp.add(this, 'build.js');
+    this.structure.gulp.utils.add(this, '../../../../app/common/paths.js', 'paths.js');
+    this.structure.gulp.utils.add(this, '../../../../app/common/options.js', 'options.js');
     this.structure.gulp.add(this, 'clean.js');
-    this.structure.gulp.add(this, 'watch.js');
 
     switch (props.style) {
       case 'sass':
@@ -112,6 +111,21 @@ module.exports = Base.extend({
       npmDev.push('gulp-sourcemaps');
     }
 
+    if (has.csslint) {
+      npmDev.push('gulp-csslint');
+    }
+
+    if (has.jslint) {
+      if (has.coffeescript) {
+        npmDev.push('gulp-coffeelint');
+        npmDev.push('coffeelint-stylish');
+      } else if (has.typescript) {
+        npmDev.push('gulp-tslint');
+      } else {
+        npmDev.push('gulp-eslint');
+      }
+    }
+
     if (props.test === 'karma') {
       props.karmaLaunchers.forEach(function (l) {
         npmDev.push('karma-' + l + '-launcher');
@@ -122,17 +136,11 @@ module.exports = Base.extend({
       });
     }
 
-    this.context.addGeneratorContext({
+    this.context.add({
       versions: require('./versions'),
       npm: npm,
       npmDev: npmDev,
       bower: bower
     });
-  },
-
-  writing: function () {
-
-    this.log('Writing gulp files');
-
   }
 });
