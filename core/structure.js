@@ -92,7 +92,7 @@ Folder.prototype.rename = function (newName) {
   }
 };
 
-Folder.prototype.toPOJO = function (root) {
+Folder.prototype.toPOJO = function () {
   var res = {};
   this.getFolders().forEach(function (f) {
     res[f.getName()] = f.toPOJO();
@@ -101,6 +101,16 @@ Folder.prototype.toPOJO = function (root) {
     res[f.getName()] = f.finalName || f.getName();
   });
   return res;
+};
+
+// Only reconstruct the folders for now
+Folder.prototype.fromPOJO = function (pojo) {
+  _.forOwn(pojo, function (value, key) {
+    if (_.isPlainObject(value)) {
+      this.addFolder(key);
+      this[key].fromPOJO(value);
+    }
+  }.bind(this));
 };
 
 Folder.prototype.toString = function () {

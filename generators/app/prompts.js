@@ -106,6 +106,18 @@ module.exports = function (generator) {
     ],
     when: and(hasBuild, has('script'))
   }, {
+    type: 'list',
+    name: 'server',
+    message: 'Do you need a server?',
+    default: true,
+    store: true,
+    choices: [
+      {name: 'Just a static one to serve my files', value: true},
+      {name: 'Express', value: 'express'},
+      {name: 'Nope', value: false}
+    ],
+    when: and(hasBuild, has('script'))
+  }, {
     type: 'checkbox',
     name: 'buildOthers',
     message: 'Do you need some extra goodies?',

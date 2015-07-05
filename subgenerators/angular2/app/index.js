@@ -1,10 +1,9 @@
 'use strict';
-var Base = require('../app/base');
 
-module.exports = Base.extend({
+module.exports = core.base.extend({
   initializing: function () {
-    this.context = this.options.context;
-    this.structure = this.context.structure;
+    this.init();
+    this.log('ANGULAR2');
   },
 
   prompting: function () {

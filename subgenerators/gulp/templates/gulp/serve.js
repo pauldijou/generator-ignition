@@ -98,23 +98,25 @@ if ($.config.mock) {
     }
   };
 } else {
-  // If not mock, do nothing
+  // If not mocked, do nothing
   middleware = function (req, res, next) {
     next();
   };
 };
 
 var config = {
+  <% if (has.express) { %>proxy: 'localhost:' + $.config.port,<% } else { %>
+  port: $.config.port;
   server: {
-    baseDir: './',
+    baseDir: options.dist ? './'+$.paths.dist.src : '.',
     middleware: middleware
-  },
-  port: $.config.port,
+  },<% } %>
   open: false,
-  notify: false
+  notify: true
 };
 
-if (!$.config.sync) {
+
+if (!$.config.ghost) {
   config.ghostMode = false;
 }
 

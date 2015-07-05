@@ -1,15 +1,14 @@
 'use strict';
-var Base = require('../app/base')
+var Base = require('../../generators/app/base')
 
 module.exports = Base.extend({
   initializing: function () {
-    this.context = this.options.context;
-    this.structure = this.context.structure;
+    this.init();
   },
 
   configuring: function () {
-    var props = this.context.props;
-    var has = this.context.has;
+    var props = context.props;
+    var has = context.has;
     var npm = [];
     var npmDev = [];
     var bower = [];
@@ -23,11 +22,7 @@ module.exports = Base.extend({
     npmDev.push("through2");
     npmDev.push("lazypipe");
     npmDev.push("vinyl-source-stream");
-
-    if (has.server) {
-      npmDev.push('browser-sync');
-      this.structure.gulp.add(this, 'serve.js');
-    }
+    npmDev.push("run-sequence");
 
     npmDev.push('gulp');
     npmDev.push('gulp-load-plugins');
@@ -39,13 +34,19 @@ module.exports = Base.extend({
     npmDev.push("gulp-rev");
     npmDev.push("gulp-watch");
     npmDev.push("gulp-plumber");
+    npmDev.push("gulp-useref");
+
+    if (has.server) {
+      npmDev.push('browser-sync');
+      this.structure.gulp.add(this, 'serve.js');
+    }
 
     this.structure.add(this, 'gulpfile.js');
     this.structure.gulp.utils.add(this, '$.js');
     this.structure.gulp.utils.add(this, 'onError.js');
     this.structure.gulp.utils.add(this, 'utils.js');
-    this.structure.gulp.utils.add(this, '../../../../app/common/paths.js', 'paths.js');
-    this.structure.gulp.utils.add(this, '../../../../app/common/options.js', 'options.js');
+    this.structure.gulp.utils.add(this, core.resolve('paths.js'), 'paths.js');
+    this.structure.gulp.utils.add(this, core.resolve('options.js'), 'options.js');
     this.structure.gulp.add(this, 'clean.js');
 
     switch (props.style) {
@@ -88,10 +89,10 @@ module.exports = Base.extend({
           this.structure.gulp.add(this, 'babel.js');
           npmDev.push('gulp-babel');
           break;
-          case 'traceur':
-            this.structure.gulp.add(this, 'traceur.js');
-            npmDev.push('gulp-traceur');
-            break;
+        case 'traceur':
+          this.structure.gulp.add(this, 'traceur.js');
+          npmDev.push('gulp-traceur');
+          break;
         case 'coffeescript':
           this.structure.gulp.add(this, 'coffee.js');
           npmDev.push('gulp-coffee');
@@ -136,7 +137,7 @@ module.exports = Base.extend({
       });
     }
 
-    this.context.add({
+    context.add({
       versions: require('./versions'),
       npm: npm,
       npmDev: npmDev,

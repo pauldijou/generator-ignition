@@ -5,7 +5,7 @@ var argv = require('yargs').argv;
 var options = {
   watch: true<% if (has.server) { %>,
   mock: false,
-  sync: true,
+  ghost: true,
   live: true,
   latency: '100',
   port: '8000'<% } %><% if (has.autoprefixer) { %>,
@@ -32,7 +32,7 @@ function readJSON(name) {
 
 <% if (has.server) { -%>
 read('mock');
-readBool('sync');
+readBool('ghost');
 readBool('live');
 readInt('latency');
 readInt('port');
@@ -40,13 +40,13 @@ readInt('port');
 <% if (has.autoprefixer) { %>readJSON('autoprefixer');<% } %>
 
 // Flag to indicate if we are inside the "deploy" task
-var isDeploying = (argv._[0] === 'deploy');
+options.dist = (argv._[0] === 'dist' || argv._[0] === 'dist:serve');
 
 // So, the rule to dynamically compute if we are watching or not is a bit complex
 // 1) If manually set to true by the user => override anything else
 // 2) If deploying => no watching
 // 3) If nothing => watching by default
 // 4) If manually set to false => no watching obviously
-var options.watch = (argv.watch === true) || (!isDeploying && argv.watch !== false));
+options.watch = (argv.watch === true) || (!options.dist && argv.watch !== false));
 
 module.exports = options;

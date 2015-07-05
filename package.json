@@ -1,28 +1,45 @@
 {
-  "name": "generator-wip",
+  "name": "generator-ignition",
   "version": "0.0.0",
-  "description": "???",
-  "license": "???",
+  "description": "Ignite a new project and reach the stars",
+  "license": "Apache-2.0",
   "main": "generators/app/index.js",
-  "repository": "https://github.com/pauldijou/wip",
+  "homepage": "https://github.com/pauldijou/generator-ignition",
+  "bugs": {
+    "url": "https://github.com/pauldijou/generator-ignition/issues",
+    "email": "paul.dijou@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pauldijou/generator-ignition.git"
+  },
   "author": {
     "name": "Paul Dijou",
     "email": "paul.dijou@gmail.com",
     "url": "http://pauldijou.fr"
   },
+  "bin": {
+    "ignition": "bin/ignition.js"
+  },
   "scripts": {
     "test": "mocha"
   },
   "files": [
-    "generators"
+    "bin",
+    "core",
+    "generators",
+    "subgenerators"
   ],
   "keywords": [
     "yeoman-generator",
+    "ignition",
     "kickoff",
     "liftoff",
     "takeoff",
-    "ignition",
-    "moon"
+    "rocket",
+    "moon",
+    "stars",
+    "space"
   ],
   "dependencies": {
     "yeoman-generator": "^0.20.0",

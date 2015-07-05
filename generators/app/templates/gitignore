@@ -1,5 +1,6 @@
 node_modules
 bower_components
+.generator-ignition-debug.json
 <% if (props.build) { -%>
 <%= structure.build.getPath(); %>
 <%= structure.dist.getPath(); %>

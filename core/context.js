@@ -107,4 +107,24 @@ Context.prototype.toString = function () {
   return require('util').inspect(this, {depth: null})
 };
 
+Context.prototype.save = function () {
+  this.generator.config.set('context', {
+    props: this.props,
+    versions: this.versions,
+    has: this.has,
+    packages: this.packages,
+    npm: this.npm,
+    npmDev: this.npmDev,
+    bower: this.bower,
+    bowerDev: this.bowerDev,
+    structure: this.structure.toPOJO()
+  });
+};
+
+Context.prototype.load = function () {
+  var savedContext = this.generator.config.get('context');
+  this.add(savedContext || {});
+  
+}
+
 module.exports = new Context();

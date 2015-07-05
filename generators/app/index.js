@@ -2,10 +2,11 @@
 var chalk = require('chalk');
 var yosay = require('yosay');
 var versions = require('./versions');
-var Base = require('./base');
-var structure = require('./structure');
 
-module.exports = Base.extend({
+global.core = require('../../core/core.js');
+global.context = core.context;
+
+module.exports = core.base.extend({
   initializing: {
     clean: function () {
       this.clean();
@@ -17,14 +18,13 @@ module.exports = Base.extend({
     },
 
     structure: function () {
-      this.structure = new structure.Folder(this.appname);
+      this.structure = new core.structure.Folder(this.appname);
     },
 
     context: function () {
-      this.context = require('./context');
-      this.context.generator = this;
-      this.context.structure = this.structure;
-      this.context.options = {
+      context.generator = this;
+      context.structure = this.structure;
+      context.options = {
         debug: this.options.debug,
         verbose: this.options.verbose
       };
@@ -82,6 +82,13 @@ module.exports = Base.extend({
       if (props.icons) {
         has.icons = true;
         this.structure.images.addFolder('icons');
+      }
+    }
+
+    if (props.server) {
+      has.server = true;
+      if (props.server !== true) {
+        has[props.server] = true;
       }
     }
 
@@ -166,7 +173,7 @@ module.exports = Base.extend({
       this.structure.vendors.add(this, 'modernizr.js');
     }
 
-    this.context.add({
+    context.add({
       props: props,
       versions: versions,
       has: has,
@@ -176,18 +183,14 @@ module.exports = Base.extend({
     });
   },
 
-  _composeWith: function (name) {
-    this.log('Beginning the setup of ' + chalk.red(name) + '...');
-    this.composeWith('kickoff:' + name, { options: { context: this.context } });
-    this.log('Setup done.');
-    this.delimiter();
-  },
-
   composition: function () {
     this.delimiter();
-    this.getGenerators().forEach(function (gen) {
-      if (this.context.has[gen]) {
-        this._composeWith(gen);
+    this.getSubGenerators().forEach(function (gen) {
+      if (context.has[gen]) {
+        this.log('Beginning the setup of ' + chalk.red(name) + '...');
+        this.composeLocal(name);
+        this.log('Setup done.');
+        this.delimiter();
       }
     }.bind(this));
   },
@@ -195,15 +198,15 @@ module.exports = Base.extend({
   packaging: function () {
     // We need to install all packages now
     // They might add new NPM or Bower dependencies
-    this.context.install();
+    context.install();
 
     // If we don't have any dependencies, it probably means we don't really
     // need such files
-    if (this.context.npm.length > 0 || this.context.npmDev.length > 0) {
+    if (context.npm.length > 0 || context.npmDev.length > 0) {
       this.structure.add(this, 'package.ejs', 'package.json');
     }
 
-    if (this.context.bower.length > 0 || this.context.bowerDev.length > 0) {
+    if (context.bower.length > 0 || context.bowerDev.length > 0) {
       this.structure.add(this, 'bower.ejs', 'bower.json');
     }
   },
@@ -280,7 +283,7 @@ module.exports = Base.extend({
       var from = this._getTemplateOf(file);
       var to = this._getDestinationOf(file);
       this.debug('Templating from ' + chalk.bold(from) + ' to ' + chalk.bold(to));
-      this.fs.copyTpl(from, to, this.context)
+      this.fs.copyTpl(from, to, context);
     }.bind(this));
     this.debug(' ');
   },
@@ -296,8 +299,8 @@ module.exports = Base.extend({
   },
 
   _displayMessages: function (propert, color) {
-    if (this.context[property].length > 0) {
-      this.context[property].forEach(function (msg) {
+    if (context[property].length > 0) {
+      context[property].forEach(function (msg) {
         this.log('[' + chalk[color].bold(property.toUpperCase()) + '] ' + msg);
       }.bind(this));
 

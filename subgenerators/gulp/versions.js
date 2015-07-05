@@ -5,7 +5,7 @@ module.exports = {
   "gulp-if": "1.2.x",
   "gulp-ignore": "1.2.x",
   "gulp-size": "1.2.x",
-  "gulp-usemin": "0.3.x",
+  "gulp-useref": "~1.2.0",
   "gulp-notify": "2.2.x",
   "gulp-filter": "2.0.x",
   "gulp-rev": "4.0.x",

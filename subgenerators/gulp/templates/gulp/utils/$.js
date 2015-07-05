@@ -21,12 +21,13 @@ module.exports.reloadStream = function () {
 <% } -%>
 
 // Expose some other modules (local or not)
-module.exports.utils      = utils;
-module.exports.paths      = require('./paths');
-module.exports.del        = require('del');
-module.exports.through2   = require('through2');
-module.exports.lazypipe   = require('lazypipe');
-module.exports.source     = require('vinyl-source-stream');
+module.exports.utils       = utils;
+module.exports.paths       = require('./paths');
+module.exports.del         = require('del');
+module.exports.through2    = require('through2');
+module.exports.lazypipe    = require('lazypipe');
+module.exports.source      = require('vinyl-source-stream');
+module.exports.runSequence = require('run-sequence');
 
 <% if (has.browserify) { -%>
 module.exports.browserify = require('browserify');
