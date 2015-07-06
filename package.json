@@ -1,6 +1,6 @@
 {
   "name": "generator-ignition",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Ignite a new project and reach the stars",
   "license": "Apache-2.0",
   "main": "generators/app/index.js",
@@ -46,7 +46,8 @@
     "chalk": "^1.0.0",
     "yosay": "^1.0.2",
     "lodash": "^3.8.0",
-    "ejs": "^2.3.1"
+    "ejs": "^2.3.1",
+    "open-issue": "^0.2.0"
   },
   "devDependencies": {
     "mocha": "*"

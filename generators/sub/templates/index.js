@@ -1,24 +1,33 @@
 'use strict';
-var Base = require('../app/base')
 
-module.exports = Base.extend({
+module.exports = core.base.extend({
   initializing: function () {
     this.init();
   },
 
   configuring: function () {
-    var props = this.context.props;
-    var has = this.context.has;
+    var structure = context.structure;
+    var props = context.props;
+    var has = context.has;
+
+    var packages = [];
     var npm = [];
     var npmDev = [];
     var bower = [];
 
-    // Improve this.structure if necessary
+    // Improve structure if necessary
+    // strucutre.addFolder('name');
+
+    // Add packages
+    // packages.push(core.packages.myPackage);
 
     // Add dependencies and files
+    // structure.name.add(this, 'file.js');
+    // if (has.feature) { npm.push('my-package'); }
 
-    this.context.add({
+    context.add({
       versions: require('./versions'),
+      packages: packages,
       npm: npm,
       npmDev: npmDev,
       bower: bower

@@ -10,6 +10,7 @@ module.exports = {
   angular2: {version: '2.0.0-alpha.25', github: 'angular/angular', npm: 'angular2'},
   aurelia:  {version: '0.12.0', github: 'aurelia/bootstrapper', bower: 'aurelia-bootstrapper'},
   ember:    {version: '1.12.0', github: 'emberjs/ember.js', bower: 'ember', component: 'components/ember'},
+  react:    {version: '0.13.3', github: 'facebook/react', npm: 'react', bower: 'react'},
 
   // Polyfills
   picturefill: {version: '2.3.1', github: 'scottjehl/picturefill', npm: 'picturefill', bower: 'picturefill'}

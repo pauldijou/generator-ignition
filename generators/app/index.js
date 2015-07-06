@@ -17,13 +17,9 @@ module.exports = core.base.extend({
       this.option('verbose');
     },
 
-    structure: function () {
-      this.structure = new core.structure.Folder(this.appname);
-    },
-
     context: function () {
       context.generator = this;
-      context.structure = this.structure;
+      context.structure = new core.structure.Folder(this.appname);
       context.options = {
         debug: this.options.debug,
         verbose: this.options.verbose

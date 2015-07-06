@@ -1,7 +1,7 @@
 var path = require('path');
 
 function resolve(file) {
-  return path.resolve('.', file);
+  return path.resolve('..', file);
 }
 
 module.exports = {
@@ -11,5 +11,6 @@ module.exports = {
   },
   base: require('./base.js'),
   context: require('./context.js'),
-  structure: require('./structure.js')
+  structure: require('./structure.js'),
+  packages: require('./packages.js')
 };

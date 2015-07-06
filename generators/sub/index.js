@@ -1,16 +1,16 @@
 'use strict';
 var _ = require('lodash');
-var Base = require('../app/base');
+var core = require('../../core/core.js');
 
-module.exports = Base.extend({
+module.exports = core.base.extend({
   prompting: function () {
     var done = this.async();
-    var generators = this.getGenerators();
+    var generators = this.getSubGenerators();
 
     var prompts = [{
       type: 'input',
       name: 'name',
-      message: 'What\'s the name of your new sub-generator?',
+      message: 'What\'s the name of your new subgenerator?',
       validate: function (answer) {
         if (!answer) {
           return 'You need to specify a valid name.';
@@ -20,6 +20,14 @@ module.exports = Base.extend({
           return true;
         }
       }
+    }, {
+      type: 'choice',
+      name: 'snippet',
+      message: 'Are you planning to have snippets?',
+      choices: [
+        {name: 'Yes', value: true},
+        {name: 'No', value: false}
+      ]
     }];
 
     this.prompt(prompts, function (props) {
@@ -28,14 +36,14 @@ module.exports = Base.extend({
     }.bind(this));
   },
 
-  writing: function {
+  writing: function () {
     var name = _.kebabCase(this.props.name);
-    var files = ['index.js', 'versions.js'];
+    var files = ['index.js', 'versions.js', 'templates'];
 
     files.map(function (file) {
-      return {from: file, to: 'generators/'+props.name+'/'+file};
-    }).forEach(function (file) {
-      this.fs.copy(this.templatePath(file.from), this.destinationPath(file.to));
-    });
+      return {from: this.templatePath(file), to: this.destinationPath((this.props.snippet ? 'app/' : '') + file)};
+    }.bind(this)).forEach(function (file) {
+      this.fs.copy(file.from, file.to);
+    }.bind(this));
   }
 });

@@ -1,20 +1,18 @@
 'use strict';
-var Base = require('../../generators/app/base')
 
-module.exports = Base.extend({
+module.exports = core.base.extend({
   initializing: function () {
     this.init();
   },
 
   configuring: function () {
+    var structure = context.structure;
     var props = context.props;
     var has = context.has;
-    var npm = [];
     var npmDev = [];
-    var bower = [];
 
-    this.structure.addFolder('gulp');
-    this.structure.gulp.addFolder('utils');
+    structure.addFolder('gulp');
+    structure.gulp.addFolder('utils');
 
     npmDev.push('require-dir');
     npmDev.push("del");
@@ -38,34 +36,34 @@ module.exports = Base.extend({
 
     if (has.server) {
       npmDev.push('browser-sync');
-      this.structure.gulp.add(this, 'serve.js');
+      structure.gulp.add(this, 'serve.js');
     }
 
-    this.structure.add(this, 'gulpfile.js');
-    this.structure.gulp.utils.add(this, '$.js');
-    this.structure.gulp.utils.add(this, 'onError.js');
-    this.structure.gulp.utils.add(this, 'utils.js');
-    this.structure.gulp.utils.add(this, core.resolve('paths.js'), 'paths.js');
-    this.structure.gulp.utils.add(this, core.resolve('options.js'), 'options.js');
-    this.structure.gulp.add(this, 'clean.js');
+    structure.add(this, 'gulpfile.js');
+    structure.gulp.utils.add(this, '$.js');
+    structure.gulp.utils.add(this, 'onError.js');
+    structure.gulp.utils.add(this, 'utils.js');
+    structure.gulp.utils.add(this, core.resolve('core/paths.js'), 'paths.js');
+    structure.gulp.utils.add(this, core.resolve('core/options.js'), 'options.js');
+    structure.gulp.add(this, 'clean.js');
 
     switch (props.style) {
       case 'sass':
-        this.structure.gulp.add(this, 'sass.js');
+        structure.gulp.add(this, 'sass.js');
         npmDev.push('gulp-sass');
         break;
       case 'less':
-        this.structure.gulp.add(this, 'less.js');
+        structure.gulp.add(this, 'less.js');
         npmDev.push('gulp-less');
         break;
       case 'stylus':
-        this.structure.gulp.add(this, 'stylus.js');
+        structure.gulp.add(this, 'stylus.js');
         npmDev.push('gulp-stylus');
         break;
     }
 
     if (has.browserify) {
-      this.structure.gulp.add(this, 'browserify.js');
+      structure.gulp.add(this, 'browserify.js');
       npmDev.push('browserify');
       npmDev.push('watchify');
 
@@ -86,19 +84,19 @@ module.exports = Base.extend({
     } else {
       switch (props.script) {
         case 'babel':
-          this.structure.gulp.add(this, 'babel.js');
+          structure.gulp.add(this, 'babel.js');
           npmDev.push('gulp-babel');
           break;
         case 'traceur':
-          this.structure.gulp.add(this, 'traceur.js');
+          structure.gulp.add(this, 'traceur.js');
           npmDev.push('gulp-traceur');
           break;
         case 'coffeescript':
-          this.structure.gulp.add(this, 'coffee.js');
+          structure.gulp.add(this, 'coffee.js');
           npmDev.push('gulp-coffee');
           break;
         case 'typescript':
-          this.structure.gulp.add(this, 'typescript.js');
+          structure.gulp.add(this, 'typescript.js');
           npmDev.push('gulp-typescript');
           break;
       }
@@ -139,9 +137,7 @@ module.exports = Base.extend({
 
     context.add({
       versions: require('./versions'),
-      npm: npm,
-      npmDev: npmDev,
-      bower: bower
+      npmDev: npmDev
     });
   }
 });
