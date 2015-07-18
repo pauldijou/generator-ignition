@@ -2,12 +2,12 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var _ = require('lodash');
-var fs = require('fs');
-var util = require('util');
+var fs = require('graceful-fs');
 var path = require('path');
 var ejs = require('ejs');
+var utils = require('./utils');
 
-var root = path.resolve(__dirname, '..');
+var root = utils.root;
 var dest = process.cwd();
 var config = require(path.resolve(root, 'package.json'));//JSON.parse(fs.readFileSync(path.join(root, 'package.json'), {encoding: 'utf8'}));
 var name = config.name;
@@ -66,66 +66,21 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  generators: undefined,
-  getGenerators: function () {
-    if (!this.generators) {
-      this.generators = fs.readdirSync(path.resolve(root, 'generators'));
-    }
-
-    return this.generators;
-  },
-
-  subgenerators: undefined,
-  getSubGenerators: function () {
-    if (!this.subgenerators) {
-      this.subgenerators = fs.readdirSync(path.resolve(root, 'subgenerators'));
-    }
-
-    return this.subgenerators;
-  },
-
-  // Return an array of generators that the user can call directly
-  // $yo ignition:angular2 -> illegal, you cannot run a subgenerator on its own
-  // $yo ignition:angular2:route -> ok, it's just a snippet
-  composables: undefined,
-  getComposables: function () {
-    var composables;
-
-    function hasSubs(generator) {
-      var subs = fs.readdirSync(path.resolve(root, 'subgenerators', generator));
-      return subs.length > 1 && subs.indexOf('app') > -1;
-    }
-
-    function subs(generator) {
-      return fs.readdirSync(path.resolve(root, 'subgenerators', generator)).filter(function (sub) {
-        return sub !== 'app';
-      }).map(function (sub) {
-        return generator + ':' + sub;
-      });
-    }
-
-    function flatten(acc, arr) {
-      return acc.concat(arr);
-    }
-
-    if (!this.composables) {
-      this.composables = this.getSubGenerators().filter(hasSubs).map(subs).reduce(flatten, []);
-    }
-
-    return this.composables;
-  },
+  getGenerators: utils.getGenerators,
+  getSubgenerators: utils.getSubgenerators,
+  getSnippets: utils.getSnippets,
 
   composeLocal: function (gen, sub) {
     if (!gen || !_.isString(gen)) {
       throw new Error('You can only run a generator, which should be a string: [' + gen + ']');
-    } else if (this.getSubGenerators().indexOf(gen) < 0) {
+    } else if (this.getSubgenerators().indexOf(gen) < 0) {
       throw new Error('[' + gen + '] is not a valid generator');
     }
 
 
     if (sub && !_.isString(sub)) {
       throw new Error('If you specify a subgenerator, it must be a string: [' + sub + ']');
-    } else if (sub && this.getComposables().indexOf(gen + ':' + sub) < 0) {
+    } else if (sub && this.getSnippets().indexOf(gen + ':' + sub) < 0) {
       throw new Error('[' + sub + '] is not a valid subgenerator');
     }
 

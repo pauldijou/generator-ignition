@@ -45,9 +45,14 @@
     "yeoman-generator": "^0.20.0",
     "chalk": "^1.0.0",
     "yosay": "^1.0.2",
+    "graceful-fs": "^4.1.2",
     "lodash": "^3.8.0",
     "ejs": "^2.3.1",
-    "open-issue": "^0.2.0"
+    "open-issue": "^0.2.0",
+    "yargs": "~3.9.0",
+    "tabtab": "0.0.4",
+    "omelette": "0.3.1",
+    "js-yaml": "3.3.1"
   },
   "devDependencies": {
     "mocha": "*"

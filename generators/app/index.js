@@ -24,6 +24,11 @@ module.exports = core.base.extend({
         debug: this.options.debug,
         verbose: this.options.verbose
       };
+    },
+
+    snippet: function () {
+      console.log(this);
+      console.log(process.argv);
     }
   },
 

@@ -1,5 +1,6 @@
 'use strict';
 var _ = require('lodash');
+var path = require('path');
 var core = require('../../core/core.js');
 
 module.exports = core.base.extend({
@@ -21,7 +22,7 @@ module.exports = core.base.extend({
         }
       }
     }, {
-      type: 'choice',
+      type: 'list',
       name: 'snippet',
       message: 'Are you planning to have snippets?',
       choices: [
@@ -39,9 +40,13 @@ module.exports = core.base.extend({
   writing: function () {
     var name = _.kebabCase(this.props.name);
     var files = ['index.js', 'versions.js', 'templates'];
+    var destination = path.join('subgenerators', name);
+    if (this.props.snippet) {
+      destination = path.join(destination, 'app');
+    }
 
     files.map(function (file) {
-      return {from: this.templatePath(file), to: this.destinationPath((this.props.snippet ? 'app/' : '') + file)};
+      return {from: this.templatePath(file), to: this.destinationPath(path.join(destination, file))};
     }.bind(this)).forEach(function (file) {
       this.fs.copy(file.from, file.to);
     }.bind(this));
