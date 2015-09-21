@@ -5,7 +5,7 @@ var browserSync = require('browser-sync');
 
 var prefix = $.config.mock;
 var prefixRegExp = new RegExp(prefix + '(.*)');
-var middleware;
+var middleware = [];
 
 // Add some random (configurable) latency to mock server
 // so we can simulate more or less slow network
@@ -53,7 +53,7 @@ function parseParams(query) {
 // path. If nothing found, it will try to load a JSON file and use
 // its content as the body for the response.
 if ($.config.mock) {
-  middleware = function (req, res, next) {
+  middleware.push(function (req, res, next) {
     path = req._parsedUrl.pathname;
 
     // Test if path start with the prefix
@@ -96,25 +96,35 @@ if ($.config.mock) {
       // If not starting with prefix, do nothing
       next();
     }
-  };
-} else {
-  // If not mocked, do nothing
-  middleware = function (req, res, next) {
-    next();
-  };
-};
+  });
+}
+
+<% if (has.webpack) { %>
+// Webpack hot reloading
+var webpack = require('webpack');
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpackHotMiddleware = require('webpack-hot-middleware');
+var webpackConfig = require('../webpack.config');
+var webpackBundler = webpack(webpackConfig);
+
+middleware.push(webpackDevMiddleware(webpackBundler, {
+  publicPath: webpackConfig.output.publicPath,
+  stats: { colors: true }
+}));
+
+middleware.push(webpackHotMiddleware(webpackBundler));
+<% } %>
 
 var config = {
-  <% if (has.express) { %>proxy: 'localhost:' + $.config.port,<% } else { %>
-  port: $.config.port;
+  <% if (has.server !== true) { %>proxy: 'localhost:<%= props.port %>',<% } else { %>
   server: {
-    baseDir: options.dist ? './'+$.paths.dist.src : '.',
+    baseDir: $.config..dist ? './'+$.paths.dist.src : '.',
     middleware: middleware
   },<% } %>
+  port: $.config.port,
   open: false,
   notify: true
 };
-
 
 if (!$.config.ghost) {
   config.ghostMode = false;

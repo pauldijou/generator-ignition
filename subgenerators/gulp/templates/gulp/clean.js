@@ -2,12 +2,12 @@ var gulp = require('gulp');
 var $    = require('./utils/$');
 
 var cleaners = [
-  {name: 'styles'},
-  {name: 'scripts'},
-  {name: 'unit', path: $.paths.test.unit.dest},
-  {name: 'e2e', path: $.paths.test.e2e.dest},
-  {name: 'dist', path: $.paths.dist.dir},
-  {name: 'icons', path: $.paths.icons.destFiles}
+  <% if (has.style) { %>{name: 'styles'},<% } %>
+  <% if (has.script) { %>{name: 'scripts'},<% } %>
+  <% if (has.test) { %>{name: 'unit', path: $.paths.test.unit.dest},<% } %>
+  <% if (has.test) { %>{name: 'e2e', path: $.paths.test.e2e.dest},<% } %>
+  <% if (has.icons) { %>{name: 'icons', path: $.paths.icons.destFiles},<% } %>
+  {name: 'dist', path: $.paths.dist.dir}
 ];
 
 cleaners.forEach(function (cleaner) {
@@ -16,6 +16,10 @@ cleaners.forEach(function (cleaner) {
   });
 });
 
-gulp.task('clean', ['clean:styles', 'clean:scripts']);
+var cleanTasks = [];
+<% if (has.style) { %>cleanTasks.push('clean:styles');<% } %>
+<% if (has.script) { %>cleanTasks.push('clean:scripts');<% } %>
 
-gulp.task('clean:test', ['clean:unit', 'clean:e2e']);
+gulp.task('clean', cleanTasks);
+
+<% if (has.test) { %>gulp.task('clean:test', ['clean:unit', 'clean:e2e']);<% } %>

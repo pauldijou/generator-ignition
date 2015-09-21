@@ -1,6 +1,6 @@
 # generator-ignition
 
-Answer tons of questions, receive the bootstrap of a brand new font-end project using the technologies you want (we don't support all the universe yet) and build your next awesome product on top of it.
+Answer tons of questions, receive the prototype of a brand new font-end project using the technologies you wanted (we don't support all the universe yet) and build your next awesome product on top of it.
 
 ## Install
 
@@ -11,8 +11,7 @@ npm install -g yo generator-ignition
 ## Run
 
 ```
-mkdir myNewProject
-cd myNewProject
+mkdir myNewProject && cd myNewProject
 ignition
 ```
 

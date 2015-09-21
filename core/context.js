@@ -124,7 +124,7 @@ Context.prototype.save = function () {
 Context.prototype.load = function () {
   var savedContext = this.generator.config.get('context');
   this.add(savedContext || {});
-  
+
 }
 
 module.exports = new Context();

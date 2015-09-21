@@ -1,5 +1,6 @@
 var path = require('path');
 var _ = require('lodash');
+var context = require('./context');
 
 function Folder(name, parent) {
   this.__private = {
@@ -170,18 +171,22 @@ function File(folder, generator, name, finalName) {
 File.prototype.getName = function () { return this.name; };
 
 File.prototype.getFinalName = function () {
-  return this.finalName && this.generator.render(this.finalName, this.generator.context) || this.getName();
+  return this.finalName && this.generator.render(this.finalName, context) || this.getName();
 };
 
 File.prototype.getTemplatePath = function () {
-  return path.join(this.folder.getPath(), this.getName());
+  if (path.isAbsolute(this.getName())) {
+    return this.getName();
+  } else {
+    return this.generator.templatePath(path.join(this.folder.getPath(), this.getName()));
+  }
 };
 
 File.prototype.getDestinationPath = function () {
   return path.join(this.folder.getPath(), this.getFinalName());
 };
 
-File.prototype.toString = function () { return this.getTemplatePath() };
+File.prototype.toString = function () { return this.getFinalName() };
 
 module.exports = {
   Folder: Folder,

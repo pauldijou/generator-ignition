@@ -9,7 +9,7 @@ var utils = require('./utils');
 
 var root = utils.root;
 var dest = process.cwd();
-var config = require(path.resolve(root, 'package.json'));//JSON.parse(fs.readFileSync(path.join(root, 'package.json'), {encoding: 'utf8'}));
+var config = require(path.resolve(root, 'package.json'));
 var name = config.name;
 var repository = config.repository.url;
 var debugFile = '.' + name + '-debug.json';
@@ -50,7 +50,7 @@ module.exports = yeoman.generators.Base.extend({
     try {
       fs.unlinkSync(debugFile);
     } catch (e) {
-      // The file probably don't exist so we don't care
+      // The file probably doesn't exist so we don't care
     }
   },
 
@@ -88,8 +88,15 @@ module.exports = yeoman.generators.Base.extend({
       sub = 'app';
     }
 
-    var name = gen + ':' + sub;
-    var local = path.resolve(root, 'subgenerators', gen, sub);
+    var name = gen;
+    var local = path.resolve(root, 'subgenerators', gen);
+
+    try {
+      var subLocal = path.resolve(local, sub);
+      fs.statSync(subLocal);
+      name += ':' + sub;
+      local = subLocal;
+    } catch (e) {}
 
     this.composeWith(name, {}, {local: local});
   },
@@ -121,13 +128,19 @@ module.exports = yeoman.generators.Base.extend({
       };
     },
 
+    not: function (fun) {
+      return function (answers) {
+        return !fun(answers);
+      };
+    },
+
     and: function () {
       var args = Array.prototype.slice.call(arguments);
       return function (answers) {
         return args.reduce(function (res, f) {
           return res && f(answers);
         }, true);
-      }
+      };
     },
 
     or: function () {
@@ -136,7 +149,7 @@ module.exports = yeoman.generators.Base.extend({
         return args.reduce(function (res, f) {
           return res || f(answers);
         }, true);
-      }
+      };
     }
   },
 

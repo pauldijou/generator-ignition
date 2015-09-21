@@ -1,3 +1,5 @@
+<%- include('_style', {has: has, name: 'sass', plugin: 'sass'}); %>
+
 var config = {
   style: 'expanded',
   precision: 10,
@@ -7,5 +9,3 @@ var config = {
     $.paths.styles.src
   ]
 };
-
-<%- include('_style', {has: has, name: 'sass', plugin: 'sass'}); %>

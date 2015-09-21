@@ -12,6 +12,7 @@ if (has.coffeescript) {
   reporter = '$.tslint.report(\'prose\')';
 }
 -%>
+
 gulp.task('<%= plugin %>', ['clean:scripts'], function () {
   return gulp.src($.paths.scripts.srcFiles)
     .pipe($.if($.config.watch, $.watch($.paths.scripts.srcFiles)))

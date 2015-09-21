@@ -21,6 +21,7 @@ module.exports = core.base.extend({
     npmDev.push("lazypipe");
     npmDev.push("vinyl-source-stream");
     npmDev.push("run-sequence");
+    npmDev.push('browser-sync');
 
     npmDev.push('gulp');
     npmDev.push('gulp-load-plugins');
@@ -34,11 +35,6 @@ module.exports = core.base.extend({
     npmDev.push("gulp-plumber");
     npmDev.push("gulp-useref");
 
-    if (has.server) {
-      npmDev.push('browser-sync');
-      structure.gulp.add(this, 'serve.js');
-    }
-
     structure.add(this, 'gulpfile.js');
     structure.gulp.utils.add(this, '$.js');
     structure.gulp.utils.add(this, 'onError.js');
@@ -46,6 +42,7 @@ module.exports = core.base.extend({
     structure.gulp.utils.add(this, core.resolve('core/paths.js'), 'paths.js');
     structure.gulp.utils.add(this, core.resolve('core/options.js'), 'options.js');
     structure.gulp.add(this, 'clean.js');
+    structure.gulp.add(this, 'serve.js');
 
     switch (props.style) {
       case 'sass':

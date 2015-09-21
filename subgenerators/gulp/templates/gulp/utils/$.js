@@ -1,7 +1,6 @@
 var plugins = require('gulp-load-plugins')();
 var argv    = require('yargs').argv;
 var utils   = require('./utils');
-var _       = require('lodash');
 
 // ----------------------------------------------------------------------------
 // Exposing stuff
@@ -58,11 +57,10 @@ module.exports.on = {
 // ----------------------------------------------------------------------------
 // Configuration
 
-var config = module.exports.config = _.merge(require('./options'), {
-  styles: [],
-  scripts: [],
-  frameworks: []
-});
+var config = module.exports.config = require('./options');
+config.styles = [];
+config.scripts = [];
+config.frameworks = [];
 
 <% if (has.style && !has.css) { -%>
 config.styles.push('<%= props.style %>');

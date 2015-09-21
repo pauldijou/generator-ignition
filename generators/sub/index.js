@@ -6,7 +6,7 @@ var core = require('../../core/core.js');
 module.exports = core.base.extend({
   prompting: function () {
     var done = this.async();
-    var generators = this.getSubGenerators();
+    var generators = this.getSubgenerators();
 
     var prompts = [{
       type: 'input',

@@ -3,7 +3,7 @@
 'use strict';
 
 var chalk = require('chalk');
-var omelette = require('omelette')
+var omelette = require('omelette');
 var _ = require('lodash');
 var cp = require('child_process');
 var utils = require('../core/utils.js');
@@ -25,7 +25,7 @@ complete.init();
 
 if (process.argv.length === 4 && process.argv[2] === 'completion' && process.argv[3] === 'install') {
   complete.setupShellInitFile();
-  console.log('Completion installed for ' + chalk.cyan('ignition') + ' command. Start a new shell to see it in action.');
+  console.log('Completion installed for ' + chalk.cyan('ignition') + ' command. Open a new shell to see it in action.');
   return true;
 }
 
@@ -63,6 +63,5 @@ if (argv.help) {
     args = args.concat(process.argv.slice(2));
   }
 
-  console.log(args);
   cp.spawnSync('yo', args, {stdio: 'inherit'});
 }

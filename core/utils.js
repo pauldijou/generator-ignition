@@ -56,8 +56,6 @@ function parseFrontMatter(content) {
   var regexp = /^(-{3}(?:\n|\r)([\w\W]+?)(?:\n|\r)-{3}(?:\n|\r))?([\w\W]*)*(?:\n|\r)$/;
   var matches = regexp.exec(content);
 
-  console.log(matches);
-
   return {
     headers: yaml.safeLoad(matches[2] || ''),
     content: matches[3] || ''

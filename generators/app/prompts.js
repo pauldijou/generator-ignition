@@ -3,11 +3,12 @@
 module.exports = function (generator) {
   var has = generator.prompts.has;
   var is = generator.prompts.is;
+  var not = generator.prompts.not;
   var and = generator.prompts.and;
   var or = generator.prompts.or;
   var hasStyle = has('style');
   var hasScript = has('script');
-  var hasBuild = or(has('gulp'), has('grunt'), has('broccoli'), has('brunch'));
+  var hasBuild = not(is('build', false));
 
   return [{
     type: 'input',
@@ -21,11 +22,13 @@ module.exports = function (generator) {
     store: true,
     choices: [
       {name: 'Gulp', value: 'gulp'},
+      {name: 'Webpack', value: 'webpack'},
       // {name: 'Grunt', value: 'grunt'},
       // {name: 'Brunch', value: 'brunch'},
       // {name: 'Broccoli', value: 'broccoli'},
       // {name: 'Component', value: 'component'},
       // {name: 'Duo', value: 'duo'},
+      // {name: 'Fly', value: 'fly'},
       {name: 'None of them, I have my own stuff', value: false}
     ]
   }, {
@@ -65,11 +68,12 @@ module.exports = function (generator) {
     store: true,
     choices: [
       {name: 'Browserify', value: 'browserify'},
+      {name: 'Webpack', value: 'webpack'},
       // {name: 'SystemJS', value: 'systemjs'},
       // {name: 'RequireJS', value: 'requirejs'},
       {name: 'Nope', value: false}
     ],
-    when: hasBuild
+    when: and(hasBuild, not(is('build', 'webpack')))
   }, {
     type: 'list',
     name: 'packageManager',
@@ -113,10 +117,15 @@ module.exports = function (generator) {
     store: true,
     choices: [
       {name: 'Just a static one to serve my files', value: true},
-      {name: 'Express', value: 'express'},
-      {name: 'Nope', value: false}
+      {name: 'Nope, I already have my own server', value: false}
     ],
     when: and(hasBuild, has('script'))
+  }, {
+    type: 'input',
+    name: 'port',
+    message: 'Which port is it running?',
+    store: true,
+    when: not(has('server'))
   }, {
     type: 'checkbox',
     name: 'buildOthers',
@@ -124,8 +133,7 @@ module.exports = function (generator) {
     store: true,
     choices: [
       {name: ' Autoprefixer', value: 'autoprefixer'},
-      {name: ' Sourcemaps', value: 'sourcemaps'},
-      {name: ' Server', value: 'server'}
+      {name: ' Sourcemaps', value: 'sourcemaps'}
     ],
     when: hasBuild
   }, {

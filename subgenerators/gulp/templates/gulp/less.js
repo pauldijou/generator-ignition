@@ -1,3 +1,5 @@
+<%- include('_style', {has: has, name: 'less', plugin: 'less'}); %>
+
 var config = {
   paths: [
     $.paths.npm.src,
@@ -5,5 +7,3 @@ var config = {
     $.paths.styles.src
   ]
 };
-
-<%- include('_style', {has: has, name: 'less', plugin: 'less'}); %>

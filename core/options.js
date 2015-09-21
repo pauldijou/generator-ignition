@@ -47,6 +47,6 @@ options.dist = (argv._[0] === 'dist' || argv._[0] === 'dist:serve');
 // 2) If deploying => no watching
 // 3) If nothing => watching by default
 // 4) If manually set to false => no watching obviously
-options.watch = (argv.watch === true) || (!options.dist && argv.watch !== false));
+options.watch = (argv.watch === true) || (!options.dist && argv.watch !== false);
 
 module.exports = options;
